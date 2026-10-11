@@ -1,0 +1,176 @@
+{
+  "author": "Kenney",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/",
+  "retrieved": "2026-10-11",
+  "packages": [
+    {
+      "id": "commercial",
+      "name": "City Kit Commercial",
+      "version": "2.1",
+      "page": "https://kenney.nl/assets/city-kit-commercial",
+      "archive": "https://kenney.nl/media/pages/assets/city-kit-commercial/a742d900eb-1753115042/kenney_city-kit-commercial_2.1.zip",
+      "files": [
+        {
+          "source": "Models/GLB format/building-a.glb",
+          "destination": "kenney/commercial/building-a.glb"
+        },
+        {
+          "source": "Models/GLB format/building-b.glb",
+          "destination": "kenney/commercial/building-b.glb"
+        },
+        {
+          "source": "Models/GLB format/building-c.glb",
+          "destination": "kenney/commercial/building-c.glb"
+        },
+        {
+          "source": "Models/GLB format/building-f.glb",
+          "destination": "kenney/commercial/building-f.glb"
+        },
+        {
+          "source": "Models/GLB format/building-h.glb",
+          "destination": "kenney/commercial/building-h.glb"
+        },
+        {
+          "source": "Models/GLB format/building-j.glb",
+          "destination": "kenney/commercial/building-j.glb"
+        },
+        {
+          "source": "Models/GLB format/building-m.glb",
+          "destination": "kenney/commercial/building-m.glb"
+        },
+        {
+          "source": "Models/GLB format/building-skyscraper-a.glb",
+          "destination": "kenney/commercial/building-skyscraper-a.glb"
+        },
+        {
+          "source": "Models/GLB format/building-skyscraper-b.glb",
+          "destination": "kenney/commercial/building-skyscraper-b.glb"
+        },
+        {
+          "source": "Models/GLB format/building-skyscraper-d.glb",
+          "destination": "kenney/commercial/building-skyscraper-d.glb"
+        },
+        {
+          "source": "Models/GLB format/Textures/colormap.png",
+          "destination": "kenney/commercial/Textures/colormap.png"
+        },
+        {
+          "source": "License.txt",
+          "destination": "licenses/kenney-city-commercial.txt"
+        }
+      ],
+      "sha256": "f8b09b081c2bb88bcc126e2dec1cb40fd0dad7e7e591b6c26aaefe96fb35276b"
+    },
+    {
+      "id": "roads",
+      "name": "City Kit Roads",
+      "version": "2.1",
+      "page": "https://kenney.nl/assets/city-kit-roads",
+      "archive": "https://kenney.nl/media/pages/assets/city-kit-roads/74288c9459-1791628607/kenney_city-kit-roads.zip",
+      "files": [
+        {
+          "source": "Models/GLB format/road-straight.glb",
+          "destination": "kenney/roads/road-straight.glb"
+        },
+        {
+          "source": "Models/GLB format/road-intersection-line.glb",
+          "destination": "kenney/roads/road-intersection-line.glb"
+        },
+        {
+          "source": "Models/GLB format/road-intersection-path.glb",
+          "destination": "kenney/roads/road-intersection-path.glb"
+        },
+        {
+          "source": "Models/GLB format/road-square.glb",
+          "destination": "kenney/roads/road-square.glb"
+        },
+        {
+          "source": "Models/GLB format/tile-low.glb",
+          "destination": "kenney/roads/tile-low.glb"
+        },
+        {
+          "source": "Models/GLB format/traffic-light.glb",
+          "destination": "kenney/roads/traffic-light.glb"
+        },
+        {
+          "source": "Models/GLB format/road-sign-street.glb",
+          "destination": "kenney/roads/road-sign-street.glb"
+        },
+        {
+          "source": "Models/GLB format/Textures/colormap.png",
+          "destination": "kenney/roads/Textures/colormap.png"
+        },
+        {
+          "source": "License.txt",
+          "destination": "licenses/kenney-city-roads.txt"
+        }
+      ],
+      "sha256": "374a4552115cbd11b4ec5c930ee31a533562dc78a09af249a655d03f7ea3b959"
+    },
+    {
+      "id": "scifi",
+      "name": "Sci-fi Sounds",
+      "version": "1.0",
+      "page": "https://kenney.nl/assets/sci-fi-sounds",
+      "archive": "https://kenney.nl/media/pages/assets/sci-fi-sounds/6b296f9ecf-1677589334/kenney_sci-fi-sounds.zip",
+      "files": [
+        {
+          "source": "Audio/laserLarge_000.ogg",
+          "destination": "audio/beam.ogg"
+        },
+        {
+          "source": "Audio/laserRetro_000.ogg",
+          "destination": "audio/machinegun.ogg"
+        },
+        {
+          "source": "Audio/forceField_000.ogg",
+          "destination": "audio/saber.ogg"
+        },
+        {
+          "source": "Audio/thrusterFire_000.ogg",
+          "destination": "audio/boost.ogg"
+        },
+        {
+          "source": "Audio/explosionCrunch_000.ogg",
+          "destination": "audio/explosion.ogg"
+        },
+        {
+          "source": "Audio/computerNoise_000.ogg",
+          "destination": "audio/wave.ogg"
+        },
+        {
+          "source": "License.txt",
+          "destination": "licenses/kenney-sci-fi-sounds.txt"
+        }
+      ],
+      "sha256": "119340f351a5098ad814f78719438c0da355a9ce8a4c8a3af6a8d48aa3d49e04"
+    },
+    {
+      "id": "impact",
+      "name": "Impact Sounds",
+      "version": "1.0",
+      "page": "https://kenney.nl/assets/impact-sounds",
+      "archive": "https://kenney.nl/media/pages/assets/impact-sounds/87b4ddecda-1677589768/kenney_impact-sounds.zip",
+      "files": [
+        {
+          "source": "Audio/impactMetal_medium_000.ogg",
+          "destination": "audio/impact.ogg"
+        },
+        {
+          "source": "Audio/impactMetal_heavy_000.ogg",
+          "destination": "audio/axe.ogg"
+        },
+        {
+          "source": "Audio/impactMetal_light_000.ogg",
+          "destination": "audio/step.ogg"
+        },
+        {
+          "source": "License.txt",
+          "destination": "licenses/kenney-impact-sounds.txt"
+        }
+      ],
+      "sha256": "029d734af1582474edf3a694d1b0cebc97c1c152f2f39fa34d4c2bafc5de77f8"
+    }
+  ]
+}

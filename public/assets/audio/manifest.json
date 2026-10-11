@@ -1,0 +1,11 @@
+{
+  "beam": "beam.ogg",
+  "machinegun": "machinegun.ogg",
+  "saber": "saber.ogg",
+  "boost": "boost.ogg",
+  "explosion": "explosion.ogg",
+  "wave": "wave.ogg",
+  "impact": "impact.ogg",
+  "axe": "axe.ogg",
+  "step": "step.ogg"
+}
