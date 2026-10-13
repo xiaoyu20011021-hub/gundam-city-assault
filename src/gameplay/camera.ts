@@ -11,8 +11,8 @@ export class ThirdPersonCamera {
   private wallSource?: RectCollider[];
   private expandedWalls: RectCollider[] = [];
   constructor(readonly camera: PerspectiveCamera) {}
-  update(position: Vector3, aiming: boolean, walls: RectCollider[], dt: number, snap = false): void {
-    const distance = aiming ? 7.7 : 12.5, shoulder = aiming ? 2.35 : 2.0;
+  update(position: Vector3, aiming: boolean, walls: RectCollider[], dt: number, snap = false, flightBoost = false): void {
+    const distance = aiming ? 7.7 : flightBoost ? 14 : 12.5, shoulder = aiming ? 2.35 : 2.0;
     if (this.wallSource !== walls) {
       this.wallSource = walls;
       this.expandedWalls = walls.map(w => ({ ...w, minX: w.minX - 0.4, maxX: w.maxX + 0.4, minZ: w.minZ - 0.4, maxZ: w.maxZ + 0.4, height: w.height + 0.4 }));
@@ -32,9 +32,11 @@ export class ThirdPersonCamera {
     const smoothedHit = firstSegmentHit(this.pivot, this.camera.position, this.expandedWalls, []);
     if (smoothedHit) this.camera.position.lerpVectors(this.pivot, this.camera.position, Math.max(0, smoothedHit.t - 0.025));
     this.camera.position.y = Math.max(0.65, this.camera.position.y);
-    const look = this.target.clone().add(new Vector3(-Math.sin(this.yaw) * 50, -Math.tan(this.pitch) * 50, -Math.cos(this.yaw) * 50));
+    // Mouse aim responds immediately even while the shoulder position eases into
+    // place. Flight input uses this same yaw/pitch direction.
+    const look = this.camera.position.clone().add(new Vector3(-Math.sin(this.yaw) * Math.cos(this.pitch), -Math.sin(this.pitch), -Math.cos(this.yaw) * Math.cos(this.pitch)));
     this.camera.lookAt(look);
-    const fov = aiming ? 44 : 58;
+    const fov = aiming ? 44 : flightBoost ? 63 : 58;
     this.camera.fov += (fov - this.camera.fov) * (snap ? 1 : 1 - Math.exp(-dt * 12));
     this.camera.updateProjectionMatrix();
   }

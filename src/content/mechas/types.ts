@@ -9,6 +9,12 @@ export interface MechaPose {
   boosting: boolean;
   airborne: boolean;
   hurt: number;
+  flying?: boolean;
+  flightBlend?: number;
+  bank?: number;
+  flightPitch?: number;
+  aimPitch?: number;
+  thrust?: number;
 }
 export interface MechaRig {
   root: Group;
@@ -25,6 +31,8 @@ export interface MechaDefinition {
   maxHealth: number;
   speed: number;
   boostSpeed: number;
+  flightSpeed: number;
+  flightBoostSpeed: number;
   radius: number;
   height: number;
   rangedWeapon: string;

@@ -134,5 +134,6 @@ export function createGundamRig(): MechaRig {
 
 export const gundamDefinition: MechaDefinition = {
   id: 'gundam', name: 'RX-78-2 高达', maxHealth: 320, speed: 9, boostSpeed: 23,
+  flightSpeed: 14, flightBoostSpeed: 30,
   radius: 1.12, height: 6.55, rangedWeapon: 'beam-rifle', meleeWeapon: 'beam-saber', createRig: createGundamRig,
 };

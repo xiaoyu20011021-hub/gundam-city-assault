@@ -3,6 +3,17 @@ import { Box3, Mesh, Vector3 } from 'three';
 import { MECHA_DEFINITIONS } from '../src/content/mechas';
 
 describe('modular mecha rigs', () => {
+  it.each(['gundam', 'zaku', 'char-zaku'])('%s points its gun along vertical aim even while leaning into flight', id => {
+    const rig = MECHA_DEFINITIONS[id].createRig();
+    for (const pitch of [-0.6, 0.6]) {
+      rig.animate({ time: 0, speed: 1, aiming: true, attack: 0, boosting: true, airborne: true, hurt: 0,
+        aimPitch: pitch, flightPitch: -0.17, flightBlend: 1 });
+      rig.root.updateMatrixWorld(true);
+      const direction = rig.muzzle.getWorldDirection(new Vector3());
+      expect(direction.y * -Math.sign(pitch)).toBeGreaterThan(0.45);
+    }
+    rig.dispose();
+  });
   it.each(['gundam', 'zaku', 'char-zaku'])('creates %s grounded at its feet with a forward muzzle', (id) => {
     const rig = MECHA_DEFINITIONS[id].createRig();
     rig.root.updateMatrixWorld(true);

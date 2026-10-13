@@ -132,10 +132,12 @@ export function createZakuRig(isChar = false): MechaRig {
 
 export const zakuDefinition: MechaDefinition = {
   id: 'zaku', name: 'MS-06F 扎古 II', maxHealth: 90, speed: 5.4, boostSpeed: 11,
+  flightSpeed: 10, flightBoostSpeed: 20,
   radius: 1.1, height: 5.95, rangedWeapon: 'zaku-machinegun', meleeWeapon: 'heat-hawk', createRig: () => createZakuRig(),
 };
 
 export const charZakuDefinition: MechaDefinition = {
   id: 'char-zaku', name: 'MS-06S 夏亚专用扎古 II', maxHealth: 300, speed: 8.2, boostSpeed: 20,
+  flightSpeed: 15, flightBoostSpeed: 32,
   radius: 1.1, height: 6.7, rangedWeapon: 'zaku-machinegun', meleeWeapon: 'heat-hawk', createRig: () => createZakuRig(true),
 };

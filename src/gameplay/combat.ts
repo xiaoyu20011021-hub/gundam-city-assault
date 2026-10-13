@@ -104,10 +104,13 @@ export function firstSegmentHit(a: Point3, b: Point3, walls: RectCollider[], act
   return nearest;
 }
 
-export function meleeCanHit(attacker: { x: number; z: number; yaw: number }, target: { x: number; z: number }, range: number, walls: RectCollider[]): boolean {
-  const dx = target.x - attacker.x, dz = target.z - attacker.z, distance = Math.hypot(dx, dz);
+export function meleeCanHit(attacker: { x: number; y?: number; z: number; yaw: number; pitch?: number; height?: number },
+  target: { x: number; y?: number; z: number; height?: number }, range: number, walls: RectCollider[]): boolean {
+  const aY = (attacker.y ?? 0) + (attacker.height ?? 6) * 0.5, bY = (target.y ?? 0) + (target.height ?? 6) * 0.5;
+  const dx = target.x - attacker.x, dz = target.z - attacker.z, dy = bY - aY, distance = Math.hypot(dx, dy, dz);
   if (distance > range || distance < 0.01) return false;
-  const dot = (dx * -Math.sin(attacker.yaw) + dz * -Math.cos(attacker.yaw)) / distance;
+  const pitch = attacker.pitch ?? 0;
+  const dot = (dx * -Math.sin(attacker.yaw) * Math.cos(pitch) - dy * Math.sin(pitch) - dz * Math.cos(attacker.yaw) * Math.cos(pitch)) / distance;
   return dot >= Math.cos(Math.PI * 0.38) && !firstSegmentHit(
-    { x: attacker.x, y: 3, z: attacker.z }, { x: target.x, y: 3, z: target.z }, walls, []);
+    { x: attacker.x, y: aY, z: attacker.z }, { x: target.x, y: bY, z: target.z }, walls, []);
 }

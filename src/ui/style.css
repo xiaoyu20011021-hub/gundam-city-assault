@@ -1304,3 +1304,16 @@ kbd {
     font-size: 28px;
   }
 }
+
+.flight-status { position: absolute; left: 42px; bottom: 218px; width: 285px; padding: 12px 15px; border-left: 2px solid rgba(162,244,213,.35); background: linear-gradient(90deg, rgba(9,25,29,.8), rgba(9,25,29,.2)); color: var(--paper); }
+.flight-status > div { display: flex; align-items: baseline; justify-content: space-between; margin: 7px 0; }
+.flight-status strong { font-size: 21px; font-weight: 650; }
+.flight-status > div > span { font-size: 11px; color: #bfd2d3; }
+.flight-status b { font: 15px var(--mono); color: var(--mint); }
+.flight-status small { display: block; font-size: 10px; color: #bfd2d3; line-height: 1.6; }
+.flight-status.airborne { border-color: var(--mint); }
+.flight-status.low-energy { border-color: #ffb36b; }
+.flight-status.low-energy small, .flight-status.low-energy strong { color: #ffb36b; }
+.boost-track i.critical { background: #ffb36b; }
+.quick-controls { flex-wrap: wrap; max-width: calc(100vw - 80px); }
+@media (max-width: 900px), (max-height: 650px) { .flight-status { left: 22px; bottom: 175px; width: 260px; padding: 8px 12px; } }

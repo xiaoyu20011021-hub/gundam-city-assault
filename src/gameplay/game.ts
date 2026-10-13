@@ -14,7 +14,7 @@ import { ThirdPersonCamera } from './camera';
 import { stepPlayerMovement } from './movement';
 import { stepEnemy } from './ai';
 import { firstSegmentHit, meleeCanHit } from './combat';
-import { moveWithCollisions } from './navigation';
+import { separateActors } from './spatial';
 import { Effects } from './effects';
 import { ProjectileSystem } from './projectiles';
 
@@ -198,6 +198,7 @@ export class Game {
       const actor = new Actor('enemy-' + this.mission.waveIndex + '-' + index, getMechaDefinition(id), 'enemy');
       actor.position.set(spawn.x, 0, spawn.z); actor.aiStrafe = index % 2 === 0 ? 1 : -1;
       actor.aiFireTimer = 1.6 + index * 0.18; actor.aiTimer = index * 0.12;
+      actor.aiFlightDelay = 1 + index * 0.7;
       this.enemies.push(actor); this.graphics.scene.add(actor.rig.root); actor.updateVisual(this.simulationTime, false);
       this.effects.burst(actor.position.clone().add(new Vector3(0, 1, 0)), 0xacd4c8, 8, 0.25, true);
     });
@@ -245,8 +246,9 @@ export class Game {
     const weapon = WEAPON_DEFINITIONS[attacker.definition.meleeWeapon];
     this.effects.trail(attacker.rig.bladeTip.getWorldPosition(new Vector3()), weapon.color);
     for (const target of targets) {
-      if (target.dead || Math.abs(target.position.y - attacker.position.y) > 4) continue;
-      if (meleeCanHit({ x: attacker.position.x, z: attacker.position.z, yaw: attacker.yaw }, target.position, weapon.range, this.world!.colliders) && attacker.swing.hit(target.id)) {
+      if (target.dead) continue;
+      if (meleeCanHit({ x: attacker.position.x, y: attacker.position.y, z: attacker.position.z, yaw: attacker.yaw, pitch: attacker.aimPitch, height: attacker.definition.height },
+        { x: target.position.x, y: target.position.y, z: target.position.z, height: target.definition.height }, weapon.range, this.world!.colliders) && attacker.swing.hit(target.id)) {
         const position = target.position.clone().add(new Vector3(0, 3, 0));
         this.effects.burst(position, weapon.color, 16, 0.6); this.damage(target, weapon.damage, position);
       }
@@ -259,31 +261,27 @@ export class Game {
     if (this.input.takeKey('Digit2')) player.setWeapon('melee');
     stepPlayerMovement(player, { x: Number(this.input.keys.has('KeyD')) - Number(this.input.keys.has('KeyA')),
       z: Number(this.input.keys.has('KeyW')) - Number(this.input.keys.has('KeyS')), yaw: this.camera.yaw,
+      pitch: this.camera.pitch, toggleFlight: this.input.takeKey('KeyF'),
+      lift: Number(this.input.keys.has('Space')) - Number(this.input.keys.has('ControlLeft') || this.input.keys.has('ControlRight')),
       boost: this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight'), jump: this.input.takeKey('Space') }, dt, walls, this.map.bounds);
-    player.yaw = this.camera.yaw; player.updateVisual(this.simulationTime, this.input.aiming);
-    this.camera.update(player.position, this.input.aiming, walls, dt);
-    this.firePlayer(); this.melee(player, this.enemies);
+    player.yaw = this.camera.yaw; player.aimPitch = this.camera.pitch;
+    const enemyActions: { enemy: Actor; fire: boolean; slash: boolean }[] = [];
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
       enemy.tick(dt);
       const action = stepEnemy(enemy, player, dt, this.simulationTime, walls, this.map.bounds);
-      enemy.updateVisual(this.simulationTime, true);
-      if (action.fire) this.fireEnemy(enemy);
-      if (action.slash) this.bus.emit('shot', { ownerId: enemy.id, weapon: enemy.definition.meleeWeapon });
-      this.melee(enemy, [player]);
+      enemyActions.push({ enemy, ...action });
     }
-    // Keep mobile suits from occupying the same position in a narrow street.
     const alive = [player, ...this.enemies].filter(a => !a.dead);
-    for (let i = 0; i < alive.length; i++) for (let j = i + 1; j < alive.length; j++) {
-      const a = alive[i], b = alive[j], dx = b.position.x - a.position.x, dz = b.position.z - a.position.z;
-      const distance = Math.hypot(dx, dz), minimum = a.definition.radius + b.definition.radius;
-      if (distance >= minimum || Math.abs(a.position.y - b.position.y) > 4) continue;
-      const nx = distance > 0.001 ? dx / distance : 1, nz = distance > 0.001 ? dz / distance : 0;
-      const correction = (minimum - distance) * 0.5;
-      for (const [actor, sign] of [[a, -1], [b, 1]] as const) {
-        const next = moveWithCollisions(actor.position, { x: nx * correction * sign, z: nz * correction * sign }, actor.definition.radius, walls, this.map.bounds);
-        actor.position.x = next.x; actor.position.z = next.z;
-      }
+    separateActors(alive, walls, this.map.bounds);
+    for (const actor of alive) actor.updateVisual(this.simulationTime, actor === player ? this.input.aiming : true);
+    this.camera.update(player.position, this.input.aiming, walls, dt, false, player.flying && player.boosting);
+    this.firePlayer(); this.melee(player, this.enemies);
+    for (const { enemy, fire, slash } of enemyActions) {
+      if (enemy.dead) continue;
+      if (fire) this.fireEnemy(enemy);
+      if (slash) this.bus.emit('shot', { ownerId: enemy.id, weapon: enemy.definition.meleeWeapon });
+      this.melee(enemy, [player]);
     }
     this.projectiles.update(dt, alive, walls, (position, amount, target) => {
       this.effects.burst(position, target ? 0xffd38c : 0xbcc9c5, target ? 10 : 6, 0.45);
@@ -294,8 +292,8 @@ export class Game {
     this.mission.update(dt);
     if (this.mission.waveChanged) { this.spawnWave(); this.bus.emit('wave', { index: this.mission.waveIndex, title: this.map.waves[this.mission.waveIndex].title }); }
     this.stepSoundTime -= dt; this.boostSoundTime -= dt;
-    if (player.boosting && this.boostSoundTime <= 0) { this.audio.play('boost', 0.12); this.boostSoundTime = 0.5; }
-    else if (player.speed > 2 && player.position.y <= 0 && this.stepSoundTime <= 0) { this.audio.play('step', 0.08, 0.85); this.stepSoundTime = 0.42; }
+    if ((player.boosting || player.flying) && this.boostSoundTime <= 0) { this.audio.play('boost', player.boosting ? 0.12 : 0.035, player.boosting ? 1 : 0.8); this.boostSoundTime = 0.6; }
+    else if (player.speed > 2 && player.grounded && this.stepSoundTime <= 0) { this.audio.play('step', 0.08, 0.85); this.stepSoundTime = 0.42; }
     if (this.mission.status === 'victory' || this.mission.status === 'defeat') this.finish();
   }
   private finish(): void {
@@ -311,7 +309,8 @@ export class Game {
     this.ui.update({ health: player.health, maxHealth: player.definition.maxHealth, energy: player.energy, heat: player.rifle.heat,
       overheated: player.rifle.overheated, weapon: WEAPON_DEFINITIONS[player.slot === 'ranged' ? player.definition.rangedWeapon : player.definition.meleeWeapon].name,
       melee: player.slot === 'melee', wave: this.mission.waveIndex + 1, remaining: this.mission.remaining, kills: this.mission.kills,
-      elapsed: this.mission.elapsed, intermission: this.mission.intermission, fps: this.fps, reloading: player.swing.running });
+      elapsed: this.mission.elapsed, intermission: this.mission.intermission, fps: this.fps, reloading: player.swing.running,
+      flightState: player.flightState, altitude: player.altitude, flightDenied: player.flightNotice > 0 });
     const markers: EnemyMarker[] = [];
     for (const enemy of this.enemies) {
       if (enemy.position.distanceTo(player.position) > 105) continue;
@@ -330,7 +329,7 @@ export class Game {
     this.frames++; this.fpsTime += elapsed;
     if (this.fpsTime >= 0.8) { this.fps = Math.round(this.frames / this.fpsTime); this.frames = 0; this.fpsTime = 0; }
     if (this.mode === 'playing') {
-      this.camera.yaw -= this.input.mouseX * 0.0021; this.camera.pitch = Math.max(-0.5, Math.min(0.85, this.camera.pitch + this.input.mouseY * 0.0017));
+      this.camera.yaw -= this.input.mouseX * 0.0021; this.camera.pitch = Math.max(-1.25, Math.min(1.25, this.camera.pitch + this.input.mouseY * 0.0017));
       this.input.mouseX = this.input.mouseY = 0;
       this.accumulator += dt;
       while (this.accumulator >= 1 / 60 && this.mode === 'playing') { this.simulation(1 / 60); this.accumulator -= 1 / 60; }
@@ -346,9 +345,10 @@ export class Game {
     return { screen: this.mode, locked: this.input.locked, quality: this.graphics.quality, fps: this.fps, audio: this.audio.state,
       renderer: { calls: this.graphics.renderer.info.render.calls, triangles: this.graphics.renderer.info.render.triangles, geometries: this.graphics.renderer.info.memory.geometries, textures: this.graphics.renderer.info.memory.textures },
       mission: { status: this.mission.status, wave: this.mission.waveIndex + 1, remaining: this.mission.remaining, kills: this.mission.kills, elapsed: this.mission.elapsed },
-      player: this.player ? { x: this.player.position.x, y: this.player.position.y, z: this.player.position.z, health: this.player.health, energy: this.player.energy, slot: this.player.slot, yaw: this.player.yaw, heat: this.player.rifle.heat } : null,
+      player: this.player ? { x: this.player.position.x, y: this.player.position.y, z: this.player.position.z, health: this.player.health, energy: this.player.energy, slot: this.player.slot, yaw: this.player.yaw, heat: this.player.rifle.heat,
+        flightState: this.player.flightState, velocity: this.player.velocity.toArray(), altitude: this.player.altitude } : null,
       camera: { x: this.graphics.camera.position.x, y: this.graphics.camera.position.y, z: this.graphics.camera.position.z, yaw: this.camera.yaw, pitch: this.camera.pitch },
-      enemies: this.enemies.map(e => { const s = e.position.clone().add(new Vector3(0, 3.5, 0)).project(this.graphics.camera); return { id: e.id, type: e.definition.id, x: e.position.x, z: e.position.z, health: e.health, screenX: (s.x * 0.5 + 0.5) * innerWidth, screenY: (-s.y * 0.5 + 0.5) * innerHeight, visible: s.z >= -1 && s.z <= 1 }; }) };
+      enemies: this.enemies.map(e => { const s = e.position.clone().add(new Vector3(0, 3.5, 0)).project(this.graphics.camera); return { id: e.id, type: e.definition.id, x: e.position.x, y: e.position.y, z: e.position.z, energy: e.energy, flightState: e.flightState, health: e.health, screenX: (s.x * 0.5 + 0.5) * innerWidth, screenY: (-s.y * 0.5 + 0.5) * innerHeight, visible: s.z >= -1 && s.z <= 1 }; }) };
   }
   dispose(): void {
     this.disposed = true; this.loadGeneration++; cancelAnimationFrame(this.frameHandle); this.input.dispose(); this.audio.dispose(); this.clearActors();
