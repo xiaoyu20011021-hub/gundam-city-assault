@@ -425,9 +425,30 @@ p {
   left: 5%;
   right: 5%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
+.pilot-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 16px;
+  color: #c3d8d8;
+  font-size: 11px;
+}
+.pilot-select select {
+  padding: 9px 12px;
+  background: #203a44;
+  color: #edfff8;
+  border: 1px solid #91b8b777;
+  font: inherit;
+}
+.gallery-actions .sortie-button {
+  background: var(--mint);
+  font-weight: 700;
+}
+.gallery-actions .sortie-button:disabled { opacity: 0.65; cursor: default; }
 .archive-card {
   position: relative;
   background: #172c38e8;

@@ -5,7 +5,7 @@ import { findPath } from './navigation';
 import { stepPlayerMovement } from './movement';
 import { WEAPON_DEFINITIONS } from '../content/weapons';
 
-export function stepEnemy(enemy: Actor, player: Actor, dt: number, time: number, walls: RectCollider[], bounds: MapDefinition['bounds']): { fire: boolean; slash: boolean } {
+export function stepEnemy(enemy: Actor, player: Actor, dt: number, time: number, walls: RectCollider[], bounds: MapDefinition['bounds'], unlimitedEnergy = false): { fire: boolean; slash: boolean } {
   const dx = player.position.x - enemy.position.x, dz = player.position.z - enemy.position.z, distance = Math.hypot(dx, dz);
   enemy.yaw = Math.atan2(-dx, -dz);
   enemy.aimPitch = -Math.atan2(player.position.y - enemy.position.y, Math.max(0.01, distance));
@@ -13,10 +13,13 @@ export function stepEnemy(enemy: Actor, player: Actor, dt: number, time: number,
     { x: player.position.x, y: player.position.y + 3.6, z: player.position.z }, walls, []);
   const elite = enemy.definition.id === 'char-zaku';
   enemy.aiFlightDelay = Math.max(0, enemy.aiFlightDelay - dt);
-  if (enemy.energy < 20) enemy.aiRecovering = true;
-  if (enemy.aiRecovering && enemy.grounded && enemy.energy >= 80) { enemy.aiRecovering = false; enemy.aiFlightDelay = 0.6; }
+  if (unlimitedEnergy) enemy.aiRecovering = false;
+  else {
+    if (enemy.energy < 20) enemy.aiRecovering = true;
+    if (enemy.aiRecovering && enemy.grounded && enemy.energy >= 80) { enemy.aiRecovering = false; enemy.aiFlightDelay = 0.6; }
+  }
   const wantsFlight = player.flying || player.position.y > enemy.position.y + 5 || (time > 4 && (time + enemy.aiStrafe * 3) % 18 < 6);
-  const toggleFlight = enemy.aiRecovering ? enemy.flying : !enemy.flying && enemy.grounded && wantsFlight && enemy.aiFlightDelay <= 0 && enemy.energy >= 60;
+  const toggleFlight = enemy.aiRecovering ? enemy.flying : !enemy.flying && enemy.grounded && wantsFlight && enemy.aiFlightDelay <= 0 && (unlimitedEnergy || enemy.energy >= 60);
   const meleeDistance = WEAPON_DEFINITIONS[enemy.definition.meleeWeapon].range - 0.3;
   const close = distance < meleeDistance && Math.abs(player.position.y - enemy.position.y) < 3.5;
   enemy.setWeapon(close ? 'melee' : 'ranged');
@@ -62,6 +65,6 @@ export function stepEnemy(enemy: Actor, player: Actor, dt: number, time: number,
   const hover = enemy.flying && clear && distance < 40 && Math.sin(time * 1.4 + enemy.aiStrafe) > 0.65;
   stepPlayerMovement(enemy, { x: hover ? 0 : mx / Math.max(1, length), z: hover ? 0 : -mz / Math.max(1, length), yaw: 0, lift,
     boost: !enemy.aiRecovering && elite && clear && distance < 65 && distance > 16 && Math.sin(time * 1.7 + enemy.aiStrafe) > 0.7,
-    jump: false, toggleFlight }, dt, walls, bounds);
+    jump: false, toggleFlight, unlimitedEnergy }, dt, walls, bounds);
   return { fire: clear && Math.hypot(distance, player.position.y - enemy.position.y) < 95 && !close && !enemy.swing.running && enemy.slot === 'ranged' && enemy.aiFireTimer <= 0 && enemy.aiReload <= 0, slash };
 }

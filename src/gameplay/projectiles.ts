@@ -25,7 +25,7 @@ export class ProjectileSystem {
     if (!p) return;
     p.active = true; p.position.copy(origin); p.velocity.copy(direction).normalize().multiplyScalar(weapon.speed);
     p.life = weapon.range / weapon.speed; p.ownerId = owner.id; p.team = owner.team; p.damage = weapon.damage;
-    p.color.setHex(weapon.color); p.beam = weapon.id === 'beam-rifle';
+    p.color.setHex(weapon.color); p.beam = weapon.id === 'beam-rifle' || weapon.id === 'beam-spray-gun';
   }
   update(dt: number, actors: Actor[], walls: RectCollider[], onHit: (position: Vector3, damage: number, target?: Actor) => void): void {
     const bodyTeams = new Map<string, Actor>();

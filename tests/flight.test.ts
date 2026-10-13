@@ -14,7 +14,7 @@ function step(a: Actor, input: Partial<MovementIntent> = {}, seconds = 1 / 60, w
 function launch(a: Actor) { step(a, { toggleFlight: true }); step(a, {}, 0.8); }
 afterEach(() => { actors.splice(0).forEach(a => a.dispose()); });
 
-it.each(['gundam', 'zaku', 'char-zaku'])('%s takes off and holds altitude while spending energy', id => {
+it.each(['gundam', 'gm', 'zaku', 'char-zaku'])('%s takes off and holds altitude while spending energy', id => {
   const a = make(id); launch(a);
   expect(a.flying).toBe(true); expect(a.position.y).toBeGreaterThan(2);
   step(a, {}, 0.5); const y = a.position.y, energy = a.energy;

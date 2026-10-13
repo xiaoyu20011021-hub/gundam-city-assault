@@ -17,14 +17,24 @@ function forwardSocket(parent: Object3D, name: string, x: number, y: number, z: 
   return socket;
 }
 
-export function createGundamWeapons(parent: Object3D, resources: GeometryResources): WeaponModels {
+export function createGundamWeapons(parent: Object3D, resources: GeometryResources, sprayGun = false): WeaponModels {
   const dark = resources.material(0x263246);
   const metal = resources.material(0x758396);
   const yellow = resources.material(0xffc845);
   const pink = resources.material(0xffa4ed, 0xff35cf, 3.6);
   const white = resources.material(0xeaf2fa);
   const ranged = group(parent, 'ranged-weapon', [0, -1.08, -0.25]);
-  const armor = group(ranged, 'rifle-body');
+  const armor = group(ranged, sprayGun ? 'spray-gun-body' : 'rifle-body');
+  if (sprayGun) {
+    part(armor, resources.box(0.49, 0.58, 0.83), dark, [0, 0.22, -0.32]);
+    part(armor, resources.box(0.33, 0.24, 0.39), metal, [0, 0.17, 0.23]);
+    part(armor, resources.box(0.23, 0.49, 0.27), dark, [0, -0.22, -0.08], [-0.18, 0, 0]);
+    part(armor, resources.cylinder(0.19, 0.24, 0.36), dark, [0, 0.23, -0.91], [Math.PI / 2, 0, 0]);
+    part(armor, resources.cylinder(0.22, 0.22, 0.12), metal, [0, 0.23, -1.12], [Math.PI / 2, 0, 0]);
+    part(armor, resources.cylinder(0.13, 0.13, 0.025), dark, [0, 0.23, -1.2], [Math.PI / 2, 0, 0]);
+    part(armor, resources.box(0.17, 0.19, 0.33), metal, [0, 0.6, -0.46]);
+    for (let i = 0; i < 3; i++) part(armor, resources.box(0.51, 0.055, 0.2), metal, [0, 0.34 - i * 0.13, -0.51]);
+  } else {
   part(armor, resources.box(0.44, 0.51, 1.46), dark, [0, 0.18, -0.45]);
   part(armor, resources.box(0.29, 0.3, 0.42), metal, [0, 0.2, 0.43]);
   part(armor, resources.box(0.2, 0.47, 0.27), dark, [0, -0.21, -0.13], [-0.2, 0, 0]);
@@ -34,8 +44,9 @@ export function createGundamWeapons(parent: Object3D, resources: GeometryResourc
   part(armor, resources.cylinder(0.1, 0.1, 0.025), yellow, [0, 0.16, -2.06], [Math.PI / 2, 0, 0]);
   part(armor, resources.cylinder(0.115, 0.115, 0.17), yellow, [0, 0.57, -0.6], [Math.PI / 2, 0, 0]);
   for (let i = 0; i < 3; i++) part(armor, resources.box(0.48, 0.045, 0.1), metal, [0, 0.24 - i * 0.1, -0.78]);
+  }
   mergeArmor(armor, resources);
-  const muzzle = forwardSocket(ranged, 'muzzle', 0, 0.16, -2.1);
+  const muzzle = forwardSocket(ranged, 'muzzle', 0, sprayGun ? 0.23 : 0.16, sprayGun ? -1.25 : -2.1);
 
   const melee = group(parent, 'melee-weapon', [0, -1.1, -0.16]);
   const saber = group(melee, 'beam-saber');

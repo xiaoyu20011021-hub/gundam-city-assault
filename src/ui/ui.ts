@@ -1,18 +1,21 @@
 import './style.css';
 
 export type Screen = 'loading' | 'menu' | 'gallery' | 'playing' | 'paused' | 'victory' | 'defeat' | 'error';
+export type SortieMode = 'standard' | 'unlimited';
 export interface HudState {
   health: number; maxHealth: number; energy: number; heat: number; overheated: boolean;
   weapon: string; melee: boolean; wave: number; remaining: number; kills: number; elapsed: number;
   intermission: number; fps: number; reloading: boolean;
   flightState: 'grounded' | 'takeoff' | 'hover' | 'flight' | 'boost' | 'descent' | 'jump';
-  altitude: number; flightDenied: boolean;
+  altitude: number; flightDenied: boolean; sortieMode: SortieMode;
 }
 export interface EnemyMarker { id: string; x: number; y: number; health: number; name: string; elite: boolean }
 export interface RadarDot { x: number; z: number; elite: boolean }
 
 export class GameUI {
   screen: Screen = 'loading';
+  private pilot: 'gundam' | 'gm' = 'gundam';
+  private sortieMode: SortieMode = 'standard';
   onAction?: (action: string) => void;
   onSetting?: (name: string, value: string | boolean) => void;
   private root: HTMLElement;
@@ -37,9 +40,9 @@ export class GameUI {
         <div class="battle-top"><div class="battle-counter"><span>敌机剩余</span><strong id="remaining">04</strong></div><span id="timer">00:00</span></div>
         <div id="reticle" aria-hidden="true"><b></b><b></b><b></b><b></b><span></span><em id="hitmarker">×</em></div>
         <div id="markers"></div><div id="floating-damage"></div>
-        <div class="flight-status" id="flight-status"><span class="micro-label">FLIGHT SYSTEM</span><div><strong id="flight-state">地面</strong><span>离地 <b id="altitude">0.0</b> m</span></div><small id="flight-hint">F 起飞 · 松开方向键悬停</small></div>
-        <div class="pilot-status"><span class="micro-label">RX-78-2 <span>GUNDAM</span></span><div class="health-numbers"><strong id="health">1000</strong><span id="max-health">/ 1000</span><span class="status-caption">机体耐久</span></div><div class="status-track"><i id="health-fill"></i></div><div class="boost-row"><span>推进能量</span><div class="boost-track"><i id="boost-fill"></i></div><b id="energy">100</b></div></div>
-        <div class="weapon-status"><span class="micro-label">WEAPON SYSTEM</span><h3 id="weapon">光束步枪</h3><div class="weapon-details"><span id="weapon-message">ENERGY · READY</span><b id="weapon-slot">01</b></div><div class="heat-track"><i id="heat-fill"></i></div><div class="weapon-keys"><span id="ranged-key" class="selected"><kbd>1</kbd> 步枪</span><span id="melee-key"><kbd>2</kbd> 军刀</span></div></div>
+        <div class="flight-status" id="flight-status"><span class="micro-label" id="flight-system-label">FLIGHT SYSTEM</span><div><strong id="flight-state">地面</strong><span>离地 <b id="altitude">0.0</b> m</span></div><small id="flight-hint">F 起飞 · 松开方向键悬停</small></div>
+        <div class="pilot-status"><span class="micro-label" id="pilot-name">RX-78-2 <span>GUNDAM</span></span><div class="health-numbers"><strong id="health">1000</strong><span id="max-health">/ 1000</span><span class="status-caption">机体耐久</span></div><div class="status-track"><i id="health-fill"></i></div><div class="boost-row"><span>推进能量</span><div class="boost-track"><i id="boost-fill"></i></div><b id="energy">100</b></div></div>
+        <div class="weapon-status"><span class="micro-label">WEAPON SYSTEM</span><h3 id="weapon">光束步枪</h3><div class="weapon-details"><span id="weapon-message">ENERGY · READY</span><b id="weapon-slot">01</b></div><div class="heat-track"><i id="heat-fill"></i></div><div class="weapon-keys"><span id="ranged-key" class="selected"><kbd>1</kbd> <span id="ranged-label">步枪</span></span><span id="melee-key"><kbd>2</kbd> 军刀</span></div></div>
         <div class="quick-controls"><span><kbd>F</kbd> 飞行 / 降落</span><span><kbd>W</kbd> 朝准星飞</span><span><kbd>Space</kbd> 跳跃 / 上升</span><span><kbd>Ctrl</kbd> 下降</span><span><kbd>Shift</kbd> 加速</span><span><kbd>Esc</kbd> 暂停</span></div>
         <div class="radar-wrap"><canvas id="radar" width="156" height="156" aria-label="附近敌机雷达"></canvas><span>TACTICAL RADAR</span></div>
         <div id="wave-banner" role="status"></div><div id="toast" role="status"></div>
@@ -66,12 +69,36 @@ export class GameUI {
     const settings = `<div class="settings-inline"><label>画质 <select data-setting="quality" aria-label="画质"><option value="medium">中 · 阴影开启</option><option value="low">低 · 流畅优先</option></select></label><label class="sound-setting"><input type="checkbox" data-setting="muted"/> 静音</label></div>`;
     const controls = `<dl class="controls-list"><div><dt>移动 / W 朝准星飞</dt><dd><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></dd></div><div><dt>飞行 / 降落</dt><dd><kbd>F</kbd></dd></div><div><dt>跳跃、上升 / 下降</dt><dd><kbd>Space</kbd><kbd>Ctrl</kbd></dd></div><div><dt>加速 / 松键悬停</dt><dd><kbd>Shift</kbd></dd></div><div><dt>攻击 / 瞄准</dt><dd><kbd>左键</kbd><kbd>右键</kbd></dd></div><div><dt>切换武器</dt><dd><kbd>1</kbd><kbd>2</kbd></dd></div></dl>`;
     if (screen === 'loading') this.overlay.innerHTML = `<div class="loading-screen"><div class="loading-mark">SD<span>＋</span></div><span class="micro-label">SYSTEM INITIALIZING</span><h2>准备出击</h2><p id="loading-message">载入城市与机体资源…</p><div class="loading-track"><i></i></div></div>`;
-    if (screen === 'menu') this.overlay.innerHTML = `<div class="menu-content"><div class="eyebrow"><span></span> OPERATION 01 · 城市战斗</div><h1>城市<span>突入<span class="title-period">.</span></span></h1><p class="menu-description">驾驶经典机体，穿越城市街区。<br>用光束步枪与军刀，迎击来袭的扎古。</p><div class="sortie-details"><span>单人作战</span><i></i><span>三波敌机</span><i></i><span>第三人称</span></div><button class="primary-button" data-action="start"><span>开始作战</span><span>↗</span></button><button class="secondary-button" data-action="gallery"><span>机体整备库</span><span>03 <b>→</b></span></button>${settings}<p class="desktop-note">电脑键鼠操作 · 点击出击后鼠标进入瞄准模式</p></div><div class="hero-caption"><span class="hero-line"></span><span class="micro-label">联邦军 · 原型机</span><h2>RX-78-2<span>GUNDAM</span></h2><p>光束步枪 ／ 光束军刀</p></div><div class="menu-footer"><span>SD GUNDAM / CITY SORTIE</span><span>本地单人体验 <b>v1.0</b></span></div>`;
-    if (screen === 'gallery') this.overlay.innerHTML = `<div class="gallery-header"><span class="micro-label">MOBILE SUIT ARCHIVE</span><h1>机体整备库<span>03</span></h1><p>经典轮廓 · SD 比例 · 可动分件</p></div><div class="gallery-cards"><button data-action="inspect-gundam" class="archive-card active"><span>01 / EARTH FEDERATION</span><h3>RX-78-2 高达</h3><p>光束步枪 · 光束军刀</p><b>可驾驶</b></button><button data-action="inspect-zaku" class="archive-card"><span>02 / PRINCIPALITY OF ZEON</span><h3>MS-06F 扎古 II</h3><p>120mm 机枪 · 热能斧</p><b>普通敌机</b></button><button data-action="inspect-char-zaku" class="archive-card char-card"><span>03 / CHAR AZNABLE</span><h3>MS-06S 夏亚专用</h3><p>指挥官角 · 红色涂装 · 精英机动</p><b>精英敌机</b></button></div><div class="gallery-actions"><button class="secondary-button" data-action="menu">← 返回作战准备</button><button class="secondary-button" data-action="rotate">旋转机体 ↻</button><button class="secondary-button" data-action="preview-weapon">切换展示武器 ⇄</button></div>`;
+    const gm = this.pilot === 'gm';
+    const pilotSelect = `<label class="pilot-select">出击机体<select data-setting="pilot" aria-label="出击机体"><option value="gundam" ${gm ? '' : 'selected'}>RX-78-2 高达</option><option value="gm" ${gm ? 'selected' : ''}>RGM-79 吉姆</option></select></label>`;
+    const modeSelect = `<label class="pilot-select">作战模式<select data-setting="sortie-mode" aria-label="作战模式"><option value="standard" ${this.sortieMode === 'standard' ? 'selected' : ''}>标准模式</option><option value="unlimited" ${this.sortieMode === 'unlimited' ? 'selected' : ''}>无限推进（机动不耗能）</option></select></label>`;
+    if (screen === 'menu') this.overlay.innerHTML = `<div class="menu-content"><div class="eyebrow"><span></span> OPERATION 01 · 城市战斗</div><h1>城市<span>突入<span class="title-period">.</span></span></h1><p class="menu-description">驾驶经典机体，穿越城市街区。<br>驾驶高达或吉姆，迎击来袭的扎古。</p><div class="sortie-details"><span>单人作战</span><i></i><span>三波敌机</span><i></i><span>第三人称</span></div>${pilotSelect}${modeSelect}<button class="primary-button" data-action="start"><span>开始作战</span><span>↗</span></button><button class="secondary-button" data-action="gallery"><span>机体整备库</span><span>04 <b>→</b></span></button>${settings}<p class="desktop-note">电脑键鼠操作 · 点击出击后鼠标进入瞄准模式</p></div><div class="hero-caption"><span class="hero-line"></span><span class="micro-label">联邦军 · ${gm ? '量产机' : '原型机'}</span><h2>${gm ? 'RGM-79' : 'RX-78-2'}<span>${gm ? 'GM' : 'GUNDAM'}</span></h2><p>${gm ? '光束喷枪' : '光束步枪'} ／ 光束军刀</p></div><div class="menu-footer"><span>SD GUNDAM / CITY SORTIE</span><span>本地单人体验 <b>v1.0</b></span></div>`;
+    if (screen === 'gallery') this.overlay.innerHTML = `<div class="gallery-header"><span class="micro-label">MOBILE SUIT ARCHIVE</span><h1>机体整备库<span>04</span></h1><p>选择机体 · 旋转检视 · 联邦机体可出击</p></div><div class="gallery-cards"><button data-action="inspect-gundam" class="archive-card active"><span>01 / EARTH FEDERATION</span><h3>RX-78-2 高达</h3><p>光束步枪 · 光束军刀</p><b>可驾驶</b></button><button data-action="inspect-gm" class="archive-card"><span>02 / EARTH FEDERATION</span><h3>RGM-79 吉姆</h3><p>光束喷枪 · 单军刀背包 · 绿色面罩</p><b>可驾驶</b></button><button data-action="inspect-zaku" class="archive-card"><span>03 / PRINCIPALITY OF ZEON</span><h3>MS-06F 扎古 II</h3><p>120mm 机枪 · 热能斧</p><b>普通敌机</b></button><button data-action="inspect-char-zaku" class="archive-card char-card"><span>04 / CHAR AZNABLE</span><h3>MS-06S 夏亚专用</h3><p>指挥官角 · 红色涂装 · 精英机动</p><b>精英敌机</b></button></div><div class="gallery-actions"><button class="secondary-button" data-action="menu">← 返回作战准备</button><button class="secondary-button" data-action="rotate">旋转机体 ↻</button><button class="secondary-button" data-action="preview-weapon">切换展示武器 ⇄</button><button class="secondary-button sortie-button" data-action="sortie">驾驶高达出击 ↗</button></div>`;
     if (screen === 'paused') this.overlay.innerHTML = `<div class="modal-scrim"></div><div class="pause-panel"><span class="micro-label">SYSTEM STANDBY</span><h1>作战暂停<span>Ⅱ</span></h1><p class="panel-subtitle">${data.message || '喘口气，准备下一次推进。'}</p><button class="primary-button" data-action="resume"><span>继续作战</span><span>→</span></button><button class="secondary-button" data-action="restart">重新出击 ↻</button><button class="text-button" data-action="menu">返回作战准备</button>${controls}${settings}</div>`;
     if (screen === 'victory' || screen === 'defeat') this.overlay.innerHTML = `<div class="modal-scrim"></div><div class="result-panel ${screen}"><span class="micro-label">${screen === 'victory' ? 'MISSION COMPLETE' : 'MISSION FAILED'}</span><h1>${screen === 'victory' ? '作战成功' : '机体失去响应'}<span>${screen === 'victory' ? '↗' : '／'}</span></h1><p>${screen === 'victory' ? '城市区域已肃清。欢迎返航，驾驶员。' : '重新整备机体，再次挑战城市战场。'}</p><div class="result-stats"><div><span>击破敌机</span><strong>${data.kills ?? 0}<small> / 15</small></strong></div><div><span>作战时间</span><strong>${formatTime(data.elapsed ?? 0)}</strong></div><div><span>作战积分</span><strong>${data.score ?? 0}</strong></div></div><div class="best-score">本地最佳 <b>${data.best ?? 0}</b></div><button class="primary-button" data-action="restart"><span>再次出击</span><span>↗</span></button><button class="text-button" data-action="menu">返回作战准备</button></div>`;
     if (screen === 'error') this.overlay.innerHTML = `<div class="modal-scrim"></div><div class="pause-panel"><span class="micro-label">LOAD INTERRUPTED</span><h1>资源载入中断</h1><p class="panel-subtitle" id="error-message"></p><button class="primary-button" data-action="retry"><span>重新载入</span><span>↻</span></button><p class="desktop-note">请通过启动脚本或本地 HTTP 服务打开游戏。</p></div>`;
     if (screen === 'error') this.overlay.querySelector('#error-message')!.textContent = data.message ?? '请刷新后重试。';
+  }
+  setPilot(id: 'gundam' | 'gm'): void {
+    this.pilot = id;
+    this.el('pilot-name').textContent = id === 'gm' ? 'RGM-79 / GM' : 'RX-78-2 / GUNDAM';
+    this.el('ranged-label').textContent = id === 'gm' ? '喷枪' : '步枪';
+  }
+  setSortieMode(mode: SortieMode): void {
+    this.sortieMode = mode;
+    const select = this.overlay.querySelector<HTMLSelectElement>('[data-setting="sortie-mode"]');
+    if (select) select.value = mode;
+  }
+  selectPreview(id: string): void {
+    this.overlay.querySelectorAll<HTMLElement>('.archive-card').forEach(card => {
+      const active = card.dataset.action === 'inspect-' + id;
+      card.classList.toggle('active', active); card.setAttribute('aria-pressed', String(active));
+    });
+    const sortie = this.overlay.querySelector<HTMLButtonElement>('[data-action="sortie"]');
+    if (sortie) {
+      sortie.disabled = id !== 'gm' && id !== 'gundam';
+      sortie.textContent = id === 'gm' ? '驾驶吉姆出击 ↗' : id === 'gundam' ? '驾驶高达出击 ↗' : '敌机 · 仅供检视';
+    }
   }
   loading(message: string): void { const node = this.overlay.querySelector('#loading-message'); if (node) node.textContent = message; }
   syncSettings(quality: string, muted: boolean): void {
@@ -83,13 +110,15 @@ export class GameUI {
     this.el('health-fill').style.width = Math.max(0, data.health / data.maxHealth * 100) + '%';
     this.el('health-fill').classList.toggle('critical', data.health < data.maxHealth * 0.3);
     this.el('boost-fill').style.width = data.energy + '%'; this.el('energy').textContent = String(Math.round(data.energy));
-    this.el('boost-fill').classList.toggle('critical', data.energy < 20);
+    this.el('boost-fill').classList.toggle('critical', data.sortieMode === 'standard' && data.energy < 20);
     const states = { grounded: '地面', takeoff: '起飞', hover: '悬停', flight: '飞行', boost: '加速', descent: '降落', jump: '跳跃' };
     this.el('flight-state').textContent = states[data.flightState];
     this.el('altitude').textContent = data.altitude.toFixed(1);
-    this.el('flight-status').classList.toggle('low-energy', data.energy < 20);
+    this.el('flight-system-label').textContent = data.sortieMode === 'unlimited' ? 'UNLIMITED BOOST' : 'FLIGHT SYSTEM';
+    this.el('flight-status').classList.toggle('low-energy', data.sortieMode === 'standard' && data.energy < 20);
     this.el('flight-status').classList.toggle('airborne', data.flightState !== 'grounded');
-    this.el('flight-hint').textContent = data.flightDenied ? '能量不足 · 至少 20 才能启动飞行' :
+    this.el('flight-hint').textContent = data.sortieMode === 'unlimited' ? '无限推进 · 飞行、冲刺、跳跃不耗能' :
+      data.flightDenied ? '能量不足 · 至少 20 才能启动飞行' :
       data.energy <= 0 && data.flightState !== 'grounded' ? '推进耗尽 · 降落后充能' :
       data.energy < 20 ? '能量偏低 · 建议落地充能' :
       data.flightState === 'grounded' ? 'F 起飞 · 松开方向键悬停' :

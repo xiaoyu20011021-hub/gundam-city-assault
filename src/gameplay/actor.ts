@@ -41,7 +41,7 @@ export class Actor {
     this.rig = definition.createRig(); this.rig.root.name = id;
     const weapon = WEAPON_DEFINITIONS[definition.rangedWeapon];
     this.rifle = new WeaponState({ cooldown: weapon.cooldown, heatPerShot: weapon.heatPerShot, cooling: weapon.cooling });
-    this.swing = definition.id === 'gundam' ? new MeleeSwing(0.18, 0.22, 0.38) : new MeleeSwing(0.32, 0.24, 0.59);
+    this.swing = definition.meleeWeapon === 'beam-saber' ? new MeleeSwing(0.18, 0.22, 0.38) : new MeleeSwing(0.32, 0.24, 0.59);
   }
   setWeapon(slot: WeaponSlot): void {
     if (this.swing.running) { this.pendingWeapon = slot; return; }

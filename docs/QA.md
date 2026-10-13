@@ -50,10 +50,18 @@ Edge 155、ANGLE AMD Radeon(TM) Graphics、960×640、中画质：实际作战�
 ## 再次验证
 
 1. 执行 `npm.cmd test`、`npm.cmd run typecheck`、`npm.cmd run build`。
-2. 双击 start-game.cmd，在 Chrome/Edge 打开。确认三款机体及武器展示、城市纹理和声音。
+2. 双击 start-game.cmd，在 Chrome/Edge 打开。确认四款机体及武器展示、城市纹理和声音。
 3. 进入战斗，检查 WASD、鼠标、1/2、Shift、Space、右键和 Esc。
 4. 靠近建筑后转动视角，检查肩后镜头、枪口遮挡和 AI 绕路。
 5. 切到其他窗口确认暂停，继续/重开后确认输入不残留。
 6. 完成胜负流程，反复重开；以 `?debug=1`、`sdDiagnostics()` 检查状态和渲染资源统计。
 
 截图保存在本地 artifacts/（开发验证产物，不打包到 dist）。内嵌预览浏览器可能限制鼠标捕获，正式游玩请使用启动脚本打开独立 Chrome/Edge。
+
+## 2026-10-13 SD 造型与吉姆
+
+- 优化高达、两款扎古的头部、装甲切面与动力管；加入 RGM-79 吉姆、光束喷枪、单军刀背包。
+- 全套 64 项测试通过；最终外观调整后，机体、飞行、生命周期、弹丸四组共 33 项相关测试再次通过，生产构建通过。
+- 浏览器验证四台整备库展示、军刀切换、吉姆出击创建、继续作战、HUD 机体与武器名称。通过真实键盘输入验证吉姆起飞悬停及切换军刀，诊断离地约 3.4 m；截图 `artifacts/sd-gm-flight.png`。
+- 独立代码复核发现喷枪弹丸误用机枪外观，已补回归测试并修复为光束外观。新增机体未改变原来的三波敌人配置。
+- 官方商品参考见 `MODEL_REFERENCES.md`。展示截图见 `artifacts/sd-models-final.png`。

@@ -4,7 +4,7 @@ import { moveBody, supportHeight } from './spatial';
 
 export interface MovementIntent {
   x: number; z: number; yaw: number; boost: boolean; jump: boolean;
-  pitch?: number; lift?: number; toggleFlight?: boolean;
+  pitch?: number; lift?: number; toggleFlight?: boolean; unlimitedEnergy?: boolean;
 }
 
 export function stepPlayerMovement(actor: Actor, input: MovementIntent, dt: number, walls: RectCollider[], bounds: MapDefinition['bounds']): void {
@@ -12,8 +12,9 @@ export function stepPlayerMovement(actor: Actor, input: MovementIntent, dt: numb
   actor.grounded = actor.position.y <= support + 1e-5 && actor.velocity.y <= 0;
   if (input.toggleFlight) {
     if (actor.flying) { actor.flying = false; actor.takeoffHeight = null; }
-    else if (actor.energy >= 20) {
-      actor.flying = true; actor.energy -= 8;
+    else if (input.unlimitedEnergy || actor.energy >= 20) {
+      actor.flying = true;
+      if (!input.unlimitedEnergy) actor.energy -= 8;
       actor.takeoffHeight = actor.grounded ? support + actor.definition.height * 0.5 : null;
     } else actor.flightNotice = 1.8;
   }
@@ -28,21 +29,26 @@ export function stepPlayerMovement(actor: Actor, input: MovementIntent, dt: numb
   }
   const magnitude = Math.hypot(x, y, z), normalizer = Math.max(1, magnitude);
   x /= normalizer; y /= normalizer; z /= normalizer;
-  actor.boosting = input.boost && magnitude > 0.01 && actor.energy > 0 && (actor.flying || actor.grounded);
+  actor.boosting = input.boost && magnitude > 0.01 && (input.unlimitedEnergy || actor.energy > 0) && (actor.flying || actor.grounded);
   if (actor.flying) {
-    actor.energy = Math.max(0, actor.energy - dt * (actor.boosting ? 18 : magnitude > 0.01 || actor.takeoffHeight !== null ? 6 : 4));
+    if (!input.unlimitedEnergy) {
+      actor.energy = Math.max(0, actor.energy - dt * (actor.boosting ? 18 : magnitude > 0.01 || actor.takeoffHeight !== null ? 6 : 4));
+      if (actor.energy === 0) { actor.flying = false; actor.boosting = false; actor.takeoffHeight = null; }
+    }
     actor.rechargeDelay = 0.6;
-    if (actor.energy === 0) { actor.flying = false; actor.boosting = false; actor.takeoffHeight = null; }
   } else if (actor.boosting) {
-    actor.energy = Math.max(0, actor.energy - dt * 36); actor.rechargeDelay = 0.6;
+    if (!input.unlimitedEnergy) actor.energy = Math.max(0, actor.energy - dt * 36);
+    actor.rechargeDelay = 0.6;
   } else if (actor.grounded && !input.boost) {
     const recovery = Math.max(0, dt - actor.rechargeDelay);
     actor.rechargeDelay = Math.max(0, actor.rechargeDelay - dt);
     actor.energy = Math.min(100, actor.energy + recovery * 24);
   } else actor.rechargeDelay = 0.6;
 
-  if (!actor.flying && input.jump && actor.grounded && actor.energy >= 22) {
-    actor.velocity.y = 12; actor.energy -= 22; actor.grounded = false; actor.rechargeDelay = 0.6;
+  if (!actor.flying && input.jump && actor.grounded && (input.unlimitedEnergy || actor.energy >= 22)) {
+    actor.velocity.y = 12;
+    if (!input.unlimitedEnergy) actor.energy -= 22;
+    actor.grounded = false; actor.rechargeDelay = 0.6;
   }
   const speed = actor.flying ? (actor.boosting ? actor.definition.flightBoostSpeed : actor.definition.flightSpeed) :
     actor.boosting ? actor.definition.boostSpeed : actor.definition.speed * (actor.grounded ? 1 : 0.7);

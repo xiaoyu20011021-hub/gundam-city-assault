@@ -1,9 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { Box3, Mesh, Vector3 } from 'three';
 import { MECHA_DEFINITIONS } from '../src/content/mechas';
+import { WEAPON_DEFINITIONS } from '../src/content/weapons';
 
 describe('modular mecha rigs', () => {
-  it.each(['gundam', 'zaku', 'char-zaku'])('%s points its gun along vertical aim even while leaning into flight', id => {
+  it.each(['gundam', 'gm', 'zaku', 'char-zaku'])('%s points its gun along vertical aim even while leaning into flight', id => {
     const rig = MECHA_DEFINITIONS[id].createRig();
     for (const pitch of [-0.6, 0.6]) {
       rig.animate({ time: 0, speed: 1, aiming: true, attack: 0, boosting: true, airborne: true, hurt: 0,
@@ -14,7 +15,7 @@ describe('modular mecha rigs', () => {
     }
     rig.dispose();
   });
-  it.each(['gundam', 'zaku', 'char-zaku'])('creates %s grounded at its feet with a forward muzzle', (id) => {
+  it.each(['gundam', 'gm', 'zaku', 'char-zaku'])('creates %s grounded at its feet with a forward muzzle', (id) => {
     const rig = MECHA_DEFINITIONS[id].createRig();
     rig.root.updateMatrixWorld(true);
     const bounds = new Box3().setFromObject(rig.root);
@@ -25,6 +26,24 @@ describe('modular mecha rigs', () => {
     expect(muzzle.y).toBeGreaterThan(2);
     expect(muzzle.z).toBeLessThan(-1);
     expect(rig.muzzle.getWorldDirection(new Vector3()).z).toBeLessThan(-0.9);
+    rig.dispose();
+  });
+
+  it('equips GM with a working spray gun and a single drawable beam saber', () => {
+    const definition = MECHA_DEFINITIONS.gm;
+    expect(definition).toBeDefined();
+    expect(WEAPON_DEFINITIONS[definition.rangedWeapon].name).toBe('光束喷枪');
+    expect(WEAPON_DEFINITIONS[definition.meleeWeapon].kind).toBe('melee');
+    const rig = definition.createRig();
+    const stowed = rig.root.getObjectByName('stowed-saber-1')!;
+    expect(stowed).toBeDefined();
+    expect(rig.root.getObjectByName('stowed-saber--1')).toBeUndefined();
+    rig.setWeapon('melee');
+    expect(stowed.visible).toBe(false);
+    expect(rig.root.getObjectByName('ranged-weapon')!.visible).toBe(false);
+    expect(rig.root.getObjectByName('melee-weapon')!.visible).toBe(true);
+    rig.setWeapon('ranged');
+    expect(stowed.visible).toBe(true);
     rig.dispose();
   });
 

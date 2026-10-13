@@ -7,7 +7,7 @@ import { cityDefinition } from '../content/maps/city';
 import type { MapDefinition, MapWorld } from '../content/maps/types';
 import { getMechaDefinition } from '../content/mechas';
 import { WEAPON_DEFINITIONS } from '../content/weapons';
-import { GameUI, type Screen, type EnemyMarker } from '../ui/ui';
+import { GameUI, type Screen, type EnemyMarker, type SortieMode } from '../ui/ui';
 import { Actor } from './actor';
 import { Mission } from './mission';
 import { ThirdPersonCamera } from './camera';
@@ -44,6 +44,8 @@ export class Game {
   private galleryRotation = 0;
   private galleryWeapon = false;
   private selectedPreview = 'gundam';
+  private selectedPlayer: 'gundam' | 'gm' = 'gundam';
+  private selectedSortieMode: SortieMode = 'standard';
   private stepSoundTime = 0;
   private boostSoundTime = 0;
   private ended = false;
@@ -60,12 +62,16 @@ export class Game {
     this.input.onUnlock = () => { if (this.mode === 'playing') this.pause(); };
     this.ui.onAction = action => { void this.action(action); };
     this.ui.onSetting = (name, value) => {
+      if (name === 'pilot' && (value === 'gundam' || value === 'gm')) { this.selectedPlayer = value; this.showMenu(); return; }
+      if (name === 'sortie-mode' && (value === 'standard' || value === 'unlimited')) {
+        this.selectedSortieMode = value; this.ui.setSortieMode(value); return;
+      }
       if (name === 'quality') { this.preferences.quality = value === 'low' ? 'low' : 'medium'; this.graphics.setQuality(this.preferences.quality); }
       if (name === 'muted') { this.preferences.muted = Boolean(value); this.audio.muted = Boolean(value); }
       writeStorage('sd-city-settings', JSON.stringify(this.preferences));
     };
     this.bus.on('shot', event => {
-      const sound = event.weapon === 'beam-rifle' ? 'beam' : event.weapon === 'beam-saber' ? 'saber' : event.weapon === 'heat-hawk' ? 'axe' : 'machinegun';
+      const sound = event.weapon === 'beam-rifle' || event.weapon === 'beam-spray-gun' ? 'beam' : event.weapon === 'beam-saber' ? 'saber' : event.weapon === 'heat-hawk' ? 'axe' : 'machinegun';
       this.audio.play(sound, event.ownerId === 'player' ? 0.48 : 0.12, 0.95 + Math.random() * 0.1);
     });
     this.bus.on('wave', event => { this.ui.wave(event.index, event.title); this.audio.play('wave', 0.28); });
@@ -110,7 +116,11 @@ export class Game {
     if (action === 'resume') return this.resume();
     if (action === 'retry') return this.load();
     if (action === 'menu') { this.mode = 'menu'; this.input.unlock(); this.audio.stop(); this.showMenu(); return; }
-    if (action === 'gallery') { this.show('gallery'); this.galleryRotation = 0; this.layoutExhibit(); return; }
+    if (action === 'gallery') { this.show('gallery'); this.ui.selectPreview(this.selectedPreview); this.galleryRotation = 0; this.layoutExhibit(); return; }
+    if (action === 'sortie' && (this.selectedPreview === 'gundam' || this.selectedPreview === 'gm')) {
+      this.selectedPlayer = this.selectedPreview;
+      return this.start();
+    }
     if (action === 'rotate') this.galleryRotation += Math.PI / 6;
     if (action === 'preview-weapon') {
       this.galleryWeapon = !this.galleryWeapon;
@@ -118,7 +128,7 @@ export class Game {
     }
     if (action.startsWith('inspect-')) {
       this.selectedPreview = action.slice(8);
-      document.querySelectorAll('.archive-card').forEach(card => card.classList.toggle('active', (card as HTMLElement).dataset.action === action));
+      this.ui.selectPreview(this.selectedPreview);
     }
   }
   private clearActors(): void {
@@ -128,9 +138,11 @@ export class Game {
     this.projectiles.clear(); this.effects.clear(); this.ui.clear();
   }
   private showMenu(): void {
-    this.clearActors(); this.ended = false; this.accumulator = 0; this.galleryWeapon = false; this.selectedPreview = 'gundam';
-    for (const id of ['gundam', 'zaku', 'char-zaku']) {
-      const actor = new Actor('preview-' + id, getMechaDefinition(id), id === 'gundam' ? 'player' : 'enemy');
+    this.clearActors(); this.ended = false; this.accumulator = 0; this.galleryWeapon = false; this.galleryRotation = 0; this.selectedPreview = this.selectedPlayer;
+    this.ui.setPilot(this.selectedPlayer);
+    this.ui.setSortieMode(this.selectedSortieMode);
+    for (const id of ['gundam', 'gm', 'zaku', 'char-zaku']) {
+      const actor = new Actor('preview-' + id, getMechaDefinition(id), id === 'gundam' || id === 'gm' ? 'player' : 'enemy');
       this.exhibit.push(actor); this.graphics.scene.add(actor.rig.root);
     }
     this.show('menu'); this.layoutExhibit(); this.updateExhibit(0);
@@ -139,8 +151,10 @@ export class Game {
     const spawn = this.map.playerSpawn;
     this.exhibit.forEach((actor, index) => {
       const gallery = this.mode === 'gallery';
-      actor.position.set(spawn.x + (gallery ? (index - 1) * 9.8 : index === 1 ? 8 : index === 2 ? -7 : 0),
-        0, spawn.z + (gallery ? 0 : index === 0 ? 0 : -7));
+      const hero = actor.definition.id === this.selectedPlayer;
+      const backdropX = actor.definition.id === 'zaku' ? 8 : actor.definition.id === 'char-zaku' ? -13 : -6;
+      actor.position.set(spawn.x + (gallery ? (index - 1.5) * 8.2 : hero ? 0 : backdropX),
+        0, spawn.z + (gallery || hero ? 0 : -8));
       actor.yaw = Math.PI + (gallery ? 0.12 : -0.15);
     });
   }
@@ -160,7 +174,8 @@ export class Game {
   private async start(): Promise<void> {
     if (!this.world) return;
     this.clearActors(); this.ended = false; this.accumulator = 0; this.simulationTime = 0;
-    this.player = new Actor('player', getMechaDefinition('gundam'), 'player');
+    this.player = new Actor('player', getMechaDefinition(this.selectedPlayer), 'player');
+    this.ui.setPilot(this.selectedPlayer);
     this.player.position.set(this.map.playerSpawn.x, 0, this.map.playerSpawn.z);
     this.graphics.scene.add(this.player.rig.root); this.camera.yaw = 0; this.camera.pitch = 0.1;
     this.mission.start(); this.spawnWave(); this.player.updateVisual(0, false);
@@ -263,13 +278,14 @@ export class Game {
       z: Number(this.input.keys.has('KeyW')) - Number(this.input.keys.has('KeyS')), yaw: this.camera.yaw,
       pitch: this.camera.pitch, toggleFlight: this.input.takeKey('KeyF'),
       lift: Number(this.input.keys.has('Space')) - Number(this.input.keys.has('ControlLeft') || this.input.keys.has('ControlRight')),
-      boost: this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight'), jump: this.input.takeKey('Space') }, dt, walls, this.map.bounds);
+      boost: this.input.keys.has('ShiftLeft') || this.input.keys.has('ShiftRight'), jump: this.input.takeKey('Space'),
+      unlimitedEnergy: this.selectedSortieMode === 'unlimited' }, dt, walls, this.map.bounds);
     player.yaw = this.camera.yaw; player.aimPitch = this.camera.pitch;
     const enemyActions: { enemy: Actor; fire: boolean; slash: boolean }[] = [];
     for (const enemy of this.enemies) {
       if (enemy.dead) continue;
       enemy.tick(dt);
-      const action = stepEnemy(enemy, player, dt, this.simulationTime, walls, this.map.bounds);
+      const action = stepEnemy(enemy, player, dt, this.simulationTime, walls, this.map.bounds, this.selectedSortieMode === 'unlimited');
       enemyActions.push({ enemy, ...action });
     }
     const alive = [player, ...this.enemies].filter(a => !a.dead);
@@ -310,7 +326,7 @@ export class Game {
       overheated: player.rifle.overheated, weapon: WEAPON_DEFINITIONS[player.slot === 'ranged' ? player.definition.rangedWeapon : player.definition.meleeWeapon].name,
       melee: player.slot === 'melee', wave: this.mission.waveIndex + 1, remaining: this.mission.remaining, kills: this.mission.kills,
       elapsed: this.mission.elapsed, intermission: this.mission.intermission, fps: this.fps, reloading: player.swing.running,
-      flightState: player.flightState, altitude: player.altitude, flightDenied: player.flightNotice > 0 });
+      flightState: player.flightState, altitude: player.altitude, flightDenied: player.flightNotice > 0, sortieMode: this.selectedSortieMode });
     const markers: EnemyMarker[] = [];
     for (const enemy of this.enemies) {
       if (enemy.position.distanceTo(player.position) > 105) continue;
@@ -345,7 +361,7 @@ export class Game {
     return { screen: this.mode, locked: this.input.locked, quality: this.graphics.quality, fps: this.fps, audio: this.audio.state,
       renderer: { calls: this.graphics.renderer.info.render.calls, triangles: this.graphics.renderer.info.render.triangles, geometries: this.graphics.renderer.info.memory.geometries, textures: this.graphics.renderer.info.memory.textures },
       mission: { status: this.mission.status, wave: this.mission.waveIndex + 1, remaining: this.mission.remaining, kills: this.mission.kills, elapsed: this.mission.elapsed },
-      player: this.player ? { x: this.player.position.x, y: this.player.position.y, z: this.player.position.z, health: this.player.health, energy: this.player.energy, slot: this.player.slot, yaw: this.player.yaw, heat: this.player.rifle.heat,
+      player: this.player ? { type: this.player.definition.id, x: this.player.position.x, y: this.player.position.y, z: this.player.position.z, health: this.player.health, energy: this.player.energy, slot: this.player.slot, yaw: this.player.yaw, heat: this.player.rifle.heat,
         flightState: this.player.flightState, velocity: this.player.velocity.toArray(), altitude: this.player.altitude } : null,
       camera: { x: this.graphics.camera.position.x, y: this.graphics.camera.position.y, z: this.graphics.camera.position.z, yaw: this.camera.yaw, pitch: this.camera.pitch },
       enemies: this.enemies.map(e => { const s = e.position.clone().add(new Vector3(0, 3.5, 0)).project(this.graphics.camera); return { id: e.id, type: e.definition.id, x: e.position.x, y: e.position.y, z: e.position.z, energy: e.energy, flightState: e.flightState, health: e.health, screenX: (s.x * 0.5 + 0.5) * innerWidth, screenY: (-s.y * 0.5 + 0.5) * innerHeight, visible: s.z >= -1 && s.z <= 1 }; }) };

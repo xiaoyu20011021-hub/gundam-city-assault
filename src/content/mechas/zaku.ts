@@ -1,26 +1,30 @@
 import { CylinderGeometry, Group, SphereGeometry } from 'three';
 import { createZakuWeapons } from '../weapons/models';
 import { assembleRig } from './animation';
-import { GeometryResources, group, mergeArmor, part, rod } from './geometry';
+import { GeometryResources, group, mergeArmor, part, powerPipe, rod } from './geometry';
 import type { MechaDefinition, MechaRig, } from './types';
 
 export function createZakuRig(isChar = false): MechaRig {
   const resources = new GeometryResources();
-  const armor = resources.material(isChar ? 0xc96563 : 0x78955c);
-  const light = resources.material(isChar ? 0xe38980 : 0x98b774);
-  const deep = resources.material(isChar ? 0x853d42 : 0x4b6746);
+  const armor = resources.material(isChar ? 0xc36964 : 0x718967);
+  const light = resources.material(isChar ? 0xde8c7f : 0x94aa7d);
+  const deep = resources.material(isChar ? 0x763e46 : 0x3e5645);
   const dark = resources.material(0x263437);
   const steel = resources.material(0x55605b);
-  const hose = resources.material(isChar ? 0xb89080 : 0xa6ac7c);
-  const pink = resources.material(0xffadf3, 0xff32c5, 3.5);
+  const hose = resources.material(isChar ? 0xd48a7c : 0x9bae87);
+  const pink = resources.material(0xff9acb, 0xff3184, 1.5);
   const root = new Group();
   root.name = isChar ? 'MS-06S Char Zaku II' : 'MS-06F Zaku II';
   const torso = group(root, 'torso', [0, 2.35, 0]);
   const body = group(torso, 'torso-armor');
   part(body, resources.box(1.55, 0.49, 1.1), dark, [0, 0.15, 0]);
-  part(body, resources.box(2.26, 1.11, 1.41, 0.15), deep, [0, 1.06, 0]);
+  part(body, resources.armor([[-0.55, 0.86, 0.55, 0], [0.24, 1.14, 0.73, 0], [0.56, 0.99, 0.6, 0]], 0.42), deep, [0, 1.06, 0]);
   part(body, resources.box(1.93, 0.57, 1.41), armor, [0, 1.44, -0.06]);
-  part(body, resources.box(1.42, 0.58, 0.26), armor, [0, 1.17, -0.78]);
+  part(body, resources.box(0.84, 0.93, 0.26), dark, [0, 1.13, -0.7]);
+  for (const side of [-1, 1]) {
+    part(body, resources.plate([[-0.2, 0.48], [0.2, 0.42], [0.24, -0.41], [-0.22, -0.45]], 0.18), armor, [side * 0.7, 1.12, -0.74]);
+    for (let i = 0; i < 3; i++) part(body, resources.box(0.21, 0.035, 0.025), deep, [side * 0.7, 1.05 + i * 0.09, -0.87]);
+  }
   part(body, resources.box(0.7, 0.39, 0.17), dark, [0, 0.74, -0.73]);
   part(body, resources.box(0.44, 0.2, 0.07), steel, [0, 0.75, -0.85]);
   for (const side of [-1, 1]) {
@@ -28,9 +32,7 @@ export function createZakuRig(isChar = false): MechaRig {
     part(body, resources.box(0.81, 0.94, 1.08), armor, [side * 1.02, -0.02, 0.14], [0, 0, side * -0.22]);
     part(body, resources.box(0.52, 0.09, 0.08), deep, [side * 0.53, -0.15, -0.81]);
     const points: [number, number, number][] = [[side * 0.42, 0.61, -0.75], [side * 0.93, 0.62, -0.74], [side * 1.12, 0.51, -0.32], [side * 1.03, 0.32, 0.43], [side * 0.63, 0.35, 0.63]];
-    part(body, resources.tube(points, 0.105), hose);
-    // Raised coupling bands make the waist power pipes read at game-camera scale.
-    for (let i = 0; i < 5; i++) part(body, resources.sphere(0.125), hose, [side * (0.72 + Math.sin(i / 4 * Math.PI) * 0.35), 0.52 - i * 0.04, -0.7 + i * 0.29], [0, 0, 0], [1, 1, 0.62]);
+    powerPipe(body, resources, points, 0.125, hose, dark, 13);
   }
   part(body, resources.box(1.75, 0.86, 0.21), armor, [0, 0, 0.68]);
   mergeArmor(body, resources);
@@ -53,31 +55,29 @@ export function createZakuRig(isChar = false): MechaRig {
   const head = group(torso, 'head', [0, 2.09, -0.01]);
   const helmet = group(head, 'helmet-armor');
   part(helmet, resources.cylinder(0.36, 0.36, 0.29), dark, [0, -0.07, 0]);
-  const dome = resources.geometry('zaku-dome', () => new SphereGeometry(1, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.63));
-  part(helmet, dome, light, [0, 0.28, 0.04], [0, 0, 0], [1.26, 1.19, 1.08]);
-  part(helmet, resources.cylinder(1.16, 1.16, 0.39, 24), armor, [0, 0.06, 0.01], [0, 0, 0], [1, 1, 0.95]);
-  const visor = resources.geometry('monoeye-visor', () => new CylinderGeometry(1.23, 1.23, 0.35, 28, 1, true, Math.PI * 0.57, Math.PI * 0.86));
-  part(helmet, visor, dark, [0, 0.32, -0.01], [0, 0, 0], [1, 1, 0.92]);
-  part(helmet, resources.sphere(0.155), pink, [0, 0.34, -1.171], [0, 0, 0], [1, 0.92, 0.43]);
-  part(helmet, resources.cylinder(0.43, 0.43, 0.42, 12), armor, [0, -0.03, -1.055], [Math.PI / 2, 0, 0]);
-  part(helmet, resources.cylinder(0.31, 0.31, 0.028, 12), deep, [0, -0.03, -1.291], [Math.PI / 2, 0, 0]);
-  for (let i = 0; i < 3; i++) part(helmet, resources.box(0.43, 0.055, 0.035), dark, [0, -0.14 + i * 0.1, -1.315]);
+  const dome = resources.geometry('zaku-dome', () => new SphereGeometry(1, 24, 14, 0, Math.PI * 2, 0, Math.PI * 0.48));
+  part(helmet, dome, light, [0, 0.44, 0.04], [0, 0, 0], [1.26, 1.19, 1.08]);
+  part(helmet, resources.cylinder(1.08, 1.17, 0.42, 24), armor, [0, -0.08, 0.01], [0, 0, 0], [1, 1, 0.95]);
+  const visor = resources.geometry('monoeye-visor', () => new CylinderGeometry(1.21, 1.21, 0.4, 32));
+  part(helmet, visor, dark, [0, 0.31, 0.01], [0, 0, 0], [1, 1, 0.92]);
+  part(helmet, resources.cylinder(1.26, 1.25, 0.11, 32), armor, [0, 0.54, 0.04], [0, 0, 0], [1, 1, 0.89]);
+  part(helmet, resources.cylinder(0.185, 0.185, 0.07, 20), steel, [0, 0.34, -1.13], [Math.PI / 2, 0, 0]);
+  part(helmet, resources.sphere(0.15), pink, [0, 0.35, -1.19], [0, 0, 0], [1, 0.92, 0.43]);
+  part(helmet, resources.plate([[-0.44, 0.14], [0.44, 0.14], [0.3, -0.37], [-0.3, -0.37]], 0.42, 0.045), armor, [0, -0.01, -1.07]);
+  part(helmet, resources.box(0.43, 0.29, 0.04), dark, [0, -0.18, -1.327]);
+  for (let i = 0; i < 3; i++) part(helmet, resources.box(0.36, 0.035, 0.035), steel, [0, -0.27 + i * 0.09, -1.36]);
   for (const side of [-1, 1]) {
     part(helmet, resources.box(0.38, 0.65, 0.49), armor, [side * 1.02, -0.03, -0.12], [0, 0, side * 0.16]);
     part(helmet, resources.cylinder(0.17, 0.17, 0.19), deep, [side * 1.17, 0.12, -0.03], [0, 0, Math.PI / 2]);
     const points: [number, number, number][] = [[side * 0.37, -0.13, -1.03], [side * 0.8, -0.24, -0.98], [side * 1.13, -0.19, -0.53], [side * 1.14, -0.03, 0.09], [side * 0.86, 0.07, 0.55]];
-    part(helmet, resources.tube(points, 0.105), hose);
-    for (let i = 0; i < 7; i++) {
-      const t = i / 6;
-      const angle = -Math.PI / 2 + t * Math.PI * 0.84;
-      part(helmet, resources.sphere(0.128), hose, [side * (0.47 + Math.cos(angle) * 0.67), -0.15 + t * 0.16, -0.35 + Math.sin(angle) * 0.72], [0, 0, 0], [0.75, 1, 1]);
-    }
+    powerPipe(helmet, resources, points, 0.128, hose, dark, 15);
   }
-  part(helmet, resources.box(0.1, 0.74, 0.15), armor, [0, 1.02, 0.17]);
+  part(helmet, resources.box(0.13, 0.055, 0.8), armor, [0, 1.63, 0.12]);
   part(helmet, resources.box(0.36, 0.16, 0.16), deep, [0, 0.51, -1.08]);
   mergeArmor(helmet, resources);
+  helmet.scale.set(1.07, 1.03, 1.07);
   if (isChar) {
-    const horn = group(head, 'commander-horn', [0, 1.17, -0.38]);
+    const horn = group(head, 'commander-horn', [0, 1.33, -0.38]);
     part(horn, resources.plate([[-0.2, -0.13], [0.2, -0.13], [0.09, 0.62], [0, 0.99], [-0.06, 0.64]], 0.23), deep, [0, 0, 0], [-0.15, 0, 0]);
     part(horn, resources.plate([[-0.095, 0.08], [0.095, 0.08], [0.042, 0.59], [0, 0.8]], 0.02, 0.012), light, [0, 0, -0.15], [-0.15, 0, 0]);
     mergeArmor(horn, resources);
@@ -89,7 +89,7 @@ export function createZakuRig(isChar = false): MechaRig {
     const arm = group(torso, side < 0 ? 'left-arm' : 'right-arm', [side * 1.53, 1.07, 0]);
     const shell = group(arm, 'arm-armor');
     part(shell, resources.cylinder(0.28, 0.28, 0.64), dark, [0, -0.37, 0]);
-    part(shell, resources.box(0.66, 0.77, 0.73, 0.12), armor, [0, -0.79, 0]);
+    part(shell, resources.armor([[-0.38, 0.3, 0.34, 0], [0.08, 0.4, 0.43, 0], [0.38, 0.29, 0.33, 0]], 0.5), armor, [0, -0.79, 0]);
     part(shell, resources.box(0.47, 0.15, 0.07), deep, [0, -0.64, -0.41]);
     part(shell, resources.box(0.48, 0.35, 0.48), dark, [0, -1.23, -0.08]);
     for (let i = 0; i < 3; i++) part(shell, resources.box(0.08, 0.11, 0.035), steel, [-0.15 + i * 0.15, -1.19, -0.34]);
@@ -113,13 +113,13 @@ export function createZakuRig(isChar = false): MechaRig {
     const boot = group(leg, 'leg-armor');
     part(boot, resources.cylinder(0.36, 0.41, 0.65), armor, [0, -0.27, 0]);
     part(boot, resources.cylinder(0.26, 0.26, 0.51), dark, [0, -0.63, 0], [0, 0, Math.PI / 2]);
-    part(boot, resources.box(0.81, 0.9, 0.91, 0.12), light, [0, -1.02, 0]);
+    part(boot, resources.sphere(1), light, [0, -1.0, 0.05], [0, 0, 0], [0.48, 0.59, 0.52]);
     part(boot, resources.box(0.62, 0.3, 0.2), armor, [0, -0.65, -0.54]);
-    part(boot, resources.box(1.11, 0.6, 1.58, 0.1), deep, [0, -1.65, -0.23]);
+    part(boot, resources.armor([[-0.3, 0.56, 0.79, -0.02], [-0.04, 0.58, 0.8, -0.01], [0.3, 0.42, 0.59, 0.08]], 0.33), deep, [0, -1.65, -0.23]);
     part(boot, resources.box(0.74, 0.29, 0.64), armor, [0, -1.36, 0]);
     part(boot, resources.box(0.65, 0.1, 0.08), deep, [0, -0.88, -0.53]);
     for (const pipeSide of [-1, 1]) {
-      part(boot, resources.tube([[pipeSide * 0.38, -0.49, 0.23], [pipeSide * 0.49, -0.82, 0.22], [pipeSide * 0.46, -1.17, 0.15]], 0.07), hose);
+      powerPipe(boot, resources, [[pipeSide * 0.38, -0.49, 0.23], [pipeSide * 0.53, -0.82, 0.27], [pipeSide * 0.46, -1.17, 0.15]], 0.09, hose, dark, 7);
     }
     mergeArmor(boot, resources);
     legs.push(leg);
