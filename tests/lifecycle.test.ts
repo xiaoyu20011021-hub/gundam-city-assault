@@ -11,7 +11,8 @@ it('releases a late map result and does not revive a disposed game', async () =>
   // Exercise the real async lifecycle method without a browser/WebGL constructor.
   const subject = Object.assign(Object.create(Game.prototype), {
     disposed: false, loadGeneration: 0, frameHandle: 1,
-    map: { createWorld: () => pending }, audio: { load: async () => {} },
+    map: { createWorld: () => pending }, audio: { load: async () => {}, stop: () => {} },
+    input: { clear: () => {}, unlock: () => {} }, clearActors: () => {},
     ui: { loading: () => {} }, graphics: { scene: new Scene() },
     show: () => {}, showMenu: () => { menus++; },
   });

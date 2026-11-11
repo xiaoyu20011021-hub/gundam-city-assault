@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>牛高达模型检视</title>
+<style>body{margin:0;background:#111c29;color:#e6eade;font:14px 'Microsoft YaHei',sans-serif}canvas{display:block;width:100vw;height:100vh}header{position:fixed;top:20px;left:24px}header b{font-size:20px}button{background:#294155;border:1px solid #75828a;color:#fff;padding:8px 16px;margin:8px}footer{position:fixed;bottom:24px;left:0;right:0;display:flex;justify-content:space-around;color:#d8c48b}small{display:block;color:#a9bbc5;margin-top:8px}</style>
+<canvas></canvas><header><b>RX-93 牛高达 · SD 模型检视</b><small>三个角度 · 模型组件验证，不运行战斗模拟</small><button id="fold">展开 / 收纳浮游炮</button><button id="weapon">步枪 / 军刀</button></header><footer><span>正面</span><span>侧面</span><span>背面</span></footer>
+<script type="module">
+import { Color, DirectionalLight, HemisphereLight, PerspectiveCamera, Scene, WebGLRenderer } from 'three';
+import { createNuGundamRig } from '/src/content/mechas/nu-gundam.ts';
+const canvas=document.querySelector('canvas'), renderer=new WebGLRenderer({canvas,antialias:true});
+renderer.setPixelRatio(1);renderer.setSize(innerWidth,innerHeight);renderer.setScissorTest(true);
+const scene=new Scene();scene.background=new Color(0x111c29);scene.add(new HemisphereLight(0xcde5ff,0x58667a,2.3));
+const light=new DirectionalLight(0xffedca,3);light.position.set(-5,12,-8);scene.add(light);
+const rig=createNuGundamRig();scene.add(rig.root);rig.animate({time:0,speed:0,aiming:false,attack:0,boosting:false,airborne:false,hurt:0});
+let melee=false,open=false;
+function draw(){const width=innerWidth/3;for(let i=0;i<3;i++){const camera=new PerspectiveCamera(32,width/innerHeight,.1,100);const angle=[0,Math.PI/2,Math.PI][i];camera.position.set(Math.sin(angle)*20,6,-Math.cos(angle)*20);camera.lookAt(-.7,3.6,0);renderer.setViewport(i*width,0,width,innerHeight);renderer.setScissor(i*width,0,width,innerHeight);renderer.render(scene,camera);}}
+document.querySelector('#weapon').onclick=()=>{melee=!melee;rig.setWeapon(melee?'melee':'ranged');draw();};
+document.querySelector('#fold').onclick=()=>{open=!open;for(const model of Object.values(rig.stowedRemoteModels)){model.getObjectByName('upper-fin').rotation.x=open?-Math.PI*.43:0;model.getObjectByName('lower-fin').rotation.x=open?Math.PI*.43:0;}draw();};
+draw();window.nuModelPreviewReady=true;
+window.addEventListener('resize',()=>{renderer.setSize(innerWidth,innerHeight);draw();});
+window.addEventListener('pagehide',()=>{rig.dispose();renderer.dispose();},{once:true});
+</script></html>

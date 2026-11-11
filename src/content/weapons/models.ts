@@ -3,8 +3,10 @@ import { GeometryResources, group, mergeArmor, part, rod } from '../mechas/geome
 
 export interface WeaponModels {
   ranged: Group;
+  alternateRanged?: Group;
   melee: Group;
   muzzle: Object3D;
+  alternateMuzzle?: Object3D;
   bladeTip: Object3D;
 }
 
@@ -47,6 +49,8 @@ export function createGundamWeapons(parent: Object3D, resources: GeometryResourc
   }
   mergeArmor(armor, resources);
   const muzzle = forwardSocket(ranged, 'muzzle', 0, sprayGun ? 0.23 : 0.16, sprayGun ? -1.25 : -2.1);
+  const machinegun = createZakuMachinegun(parent, resources, 'alternate-ranged-weapon', 'alternate-muzzle');
+  machinegun.ranged.visible = false;
 
   const melee = group(parent, 'melee-weapon', [0, -1.1, -0.16]);
   const saber = group(melee, 'beam-saber');
@@ -57,14 +61,14 @@ export function createGundamWeapons(parent: Object3D, resources: GeometryResourc
   mergeArmor(saber, resources);
   const bladeTip = forwardSocket(melee, 'blade-tip', 0, 2.35, -0.78);
   melee.visible = false;
-  return { ranged, melee, muzzle, bladeTip };
+  return { ranged, alternateRanged: machinegun.ranged, melee, muzzle, alternateMuzzle: machinegun.muzzle, bladeTip };
 }
 
-export function createZakuWeapons(parent: Object3D, resources: GeometryResources): WeaponModels {
+function createZakuMachinegun(parent: Object3D, resources: GeometryResources,
+  groupName = 'ranged-weapon', muzzleName = 'muzzle'): { ranged: Group; muzzle: Object3D } {
   const dark = resources.material(0x27313b);
   const metal = resources.material(0x65717a);
-  const orange = resources.material(0xff9b36, 0xff510b, 1.6);
-  const ranged = group(parent, 'ranged-weapon', [0, -1.05, -0.26]);
+  const ranged = group(parent, groupName, [0, -1.05, -0.26]);
   const armor = group(ranged, 'machinegun-body');
   part(armor, resources.box(0.41, 0.4, 1.08), dark, [0, 0.15, -0.36]);
   part(armor, resources.box(0.27, 0.46, 0.3), dark, [0, -0.19, -0.08], [-0.22, 0, 0]);
@@ -76,7 +80,14 @@ export function createZakuWeapons(parent: Object3D, resources: GeometryResources
   for (let i = 0; i < 4; i++) part(armor, resources.cylinder(0.15, 0.15, 0.07), dark, [0, 0.16, -1.08 - i * 0.17], [Math.PI / 2, 0, 0]);
   part(armor, resources.box(0.13, 0.22, 0.25), dark, [0, 0.48, -1.04]);
   mergeArmor(armor, resources);
-  const muzzle = forwardSocket(ranged, 'muzzle', 0, 0.16, -2.04);
+  return { ranged, muzzle: forwardSocket(ranged, muzzleName, 0, 0.16, -2.04) };
+}
+
+export function createZakuWeapons(parent: Object3D, resources: GeometryResources): WeaponModels {
+  const dark = resources.material(0x27313b);
+  const metal = resources.material(0x65717a);
+  const orange = resources.material(0xff9b36, 0xff510b, 1.6);
+  const { ranged, muzzle } = createZakuMachinegun(parent, resources);
 
   const melee = group(parent, 'melee-weapon', [0, -1.08, -0.15]);
   const hawk = group(melee, 'heat-hawk');

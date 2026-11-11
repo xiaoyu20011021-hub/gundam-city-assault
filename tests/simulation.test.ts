@@ -44,3 +44,34 @@ it('honors a weapon switch requested during melee recovery once the swing finish
   actor.tick(1);
   expect(actor.slot).toBe('ranged'); actor.dispose();
 });
+
+it('preserves independent ranged weapon states when switching to the machine gun', () => {
+  const actor = new Actor('player', getMechaDefinition('gundam'), 'player');
+  expect(actor.activeRangedState).toBe(actor.rifle);
+  actor.setWeapon('alternate-ranged');
+  expect(actor.slot).toBe('alternate-ranged');
+  expect(actor.activeRangedState).toBe(actor.alternateRangedState);
+  expect(actor.alternateRangedState?.ammo).toBe(45);
+  expect(actor.activeRangedState.fire()).toBe(true);
+  expect(actor.alternateRangedState?.ammo).toBe(44);
+  actor.setWeapon('ranged');
+  expect(actor.slot).toBe('ranged');
+  expect(actor.activeRangedState).toBe(actor.rifle);
+  expect(actor.alternateRangedState?.ammo).toBe(44);
+  actor.dispose();
+});
+
+it('starts both Zaku AI variants with a full 45-round machine-gun magazine', () => {
+  for (const id of ['zaku', 'char-zaku']) {
+    const actor = new Actor(id, getMechaDefinition(id), 'enemy');
+    expect(actor.aiAmmo).toBe(45);
+    actor.dispose();
+  }
+});
+
+it('ignores an alternate ranged slot that the mecha does not support', () => {
+  const actor = new Actor('zaku', getMechaDefinition('zaku'), 'enemy');
+  actor.setWeapon('alternate-ranged');
+  expect(actor.slot).toBe('ranged');
+  actor.dispose();
+});

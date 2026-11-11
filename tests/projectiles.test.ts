@@ -21,3 +21,21 @@ it('renders the GM spray gun with the same beam silhouette as the rifle', () => 
   expect(lengths[1]).toBeGreaterThan(lengths[2]);
   shots.dispose(); owner.dispose();
 });
+
+it('exposes detached active-shot snapshots and never reuses a shot identity', () => {
+  const owner = new Actor('player', getMechaDefinition('gm'), 'player'), shots = new ProjectileSystem();
+  shots.fire(owner, new Vector3(0, 3, 0), new Vector3(0, 0, -1), WEAPON_DEFINITIONS['zaku-machinegun']);
+  const snapshot = shots.snapshot(), id = snapshot[0].id;
+  expect(snapshot[0].team).toBe('player');
+  expect(snapshot[0].velocity.z).toBe(-95);
+  shots.update(0.1, [], [], () => {});
+  expect(snapshot[0].position.z).toBe(0);
+  expect(shots.snapshot()[0].position.z).toBeCloseTo(-9.5);
+  snapshot[0].position.x = 999;
+  expect(shots.snapshot()[0].position.x).toBe(0);
+  shots.clear(); expect(shots.snapshot()).toHaveLength(0);
+  shots.fire(owner, new Vector3(), new Vector3(0, 0, -1), WEAPON_DEFINITIONS['zaku-machinegun']);
+  expect(shots.snapshot()[0].id).toBeGreaterThan(id);
+  shots.update(2, [], [], () => {}); expect(shots.snapshot()).toHaveLength(0);
+  shots.dispose(); owner.dispose();
+});

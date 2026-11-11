@@ -4,6 +4,36 @@ import { MECHA_DEFINITIONS } from '../src/content/mechas';
 import { WEAPON_DEFINITIONS } from '../src/content/weapons';
 
 describe('modular mecha rigs', () => {
+  it('offers the Zaku machine gun as an alternate ranged weapon only to Federation suits', () => {
+    expect(MECHA_DEFINITIONS.gundam.alternateRangedWeapon).toBe('zaku-machinegun');
+    expect(MECHA_DEFINITIONS.gm.alternateRangedWeapon).toBe('zaku-machinegun');
+    expect(MECHA_DEFINITIONS.zaku.alternateRangedWeapon).toBeUndefined();
+    expect(MECHA_DEFINITIONS['char-zaku'].alternateRangedWeapon).toBeUndefined();
+  });
+
+  it('defines a 45-round magazine for the shared Zaku machine gun', () => {
+    expect(WEAPON_DEFINITIONS['zaku-machinegun'].magazine).toBe(45);
+  });
+
+  it('switches the Federation machine-gun mesh and muzzle with the alternate ranged slot', () => {
+    const rig = MECHA_DEFINITIONS.gundam.createRig();
+    const rifle = rig.root.getObjectByName('ranged-weapon')!;
+    const machinegun = rig.root.getObjectByName('alternate-ranged-weapon')!;
+    const melee = rig.root.getObjectByName('melee-weapon')!;
+    expect(machinegun.visible).toBe(false);
+
+    rig.setWeapon('alternate-ranged');
+    expect(rifle.visible).toBe(false);
+    expect(machinegun.visible).toBe(true);
+    expect(melee.visible).toBe(false);
+    expect(rig.muzzle.name).toBe('alternate-muzzle');
+
+    rig.setWeapon('melee');
+    expect(machinegun.visible).toBe(false);
+    expect(melee.visible).toBe(true);
+    rig.dispose();
+  });
+
   it.each(['gundam', 'gm', 'zaku', 'char-zaku'])('%s points its gun along vertical aim even while leaning into flight', id => {
     const rig = MECHA_DEFINITIONS[id].createRig();
     for (const pitch of [-0.6, 0.6]) {

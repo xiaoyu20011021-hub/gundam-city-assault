@@ -8,6 +8,7 @@ export class Actor {
   readonly velocity = new Vector3();
   readonly rig: MechaRig;
   readonly rifle: WeaponState;
+  readonly alternateRangedState?: WeaponState;
   readonly swing: MeleeSwing;
   health: number;
   energy = 100;
@@ -31,7 +32,7 @@ export class Actor {
   dead = false;
   aiTimer = 0;
   aiFireTimer = 0;
-  aiAmmo = 12;
+  aiAmmo: number;
   aiReload = 0;
   aiPath: { x: number; z: number }[] = [];
   aiStrafe = 1;
@@ -39,11 +40,17 @@ export class Actor {
   constructor(readonly id: string, readonly definition: MechaDefinition, readonly team: 'player' | 'enemy') {
     this.health = definition.maxHealth;
     this.rig = definition.createRig(); this.rig.root.name = id;
-    const weapon = WEAPON_DEFINITIONS[definition.rangedWeapon];
-    this.rifle = new WeaponState({ cooldown: weapon.cooldown, heatPerShot: weapon.heatPerShot, cooling: weapon.cooling });
+    const rangedWeapon = WEAPON_DEFINITIONS[definition.rangedWeapon];
+    this.rifle = new WeaponState(rangedWeapon);
+    this.aiAmmo = rangedWeapon.magazine ?? 12;
+    if (definition.alternateRangedWeapon) this.alternateRangedState = new WeaponState(WEAPON_DEFINITIONS[definition.alternateRangedWeapon]);
     this.swing = definition.meleeWeapon === 'beam-saber' ? new MeleeSwing(0.18, 0.22, 0.38) : new MeleeSwing(0.32, 0.24, 0.59);
   }
+  get activeRangedState(): WeaponState {
+    return this.slot === 'alternate-ranged' ? this.alternateRangedState! : this.rifle;
+  }
   setWeapon(slot: WeaponSlot): void {
+    if (slot === 'alternate-ranged' && !this.alternateRangedState) return;
     if (this.swing.running) { this.pendingWeapon = slot; return; }
     if (this.slot === slot) return;
     this.slot = slot; this.rig.setWeapon(slot);
@@ -62,7 +69,7 @@ export class Actor {
     this.rig.root.updateMatrixWorld(true);
   }
   tick(dt: number): void {
-    this.rifle.update(dt); this.swing.update(dt);
+    this.rifle.update(dt); this.alternateRangedState?.update(dt); this.swing.update(dt);
     if (!this.swing.running && this.pendingWeapon) {
       const slot = this.pendingWeapon; this.pendingWeapon = undefined; this.setWeapon(slot);
     }

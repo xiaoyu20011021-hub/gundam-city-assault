@@ -1,9 +1,10 @@
 import type { RectCollider, SpawnPoint, MapDefinition } from '../content/maps/types';
 import { firstSegmentHit } from './combat';
+import { overlapsFootprint } from './collider-shape';
 
 type Bounds = MapDefinition['bounds'];
 export function pointBlocked(p: SpawnPoint, walls: RectCollider[], radius: number): boolean {
-  return walls.some(w => p.x > w.minX - radius && p.x < w.maxX + radius && p.z > w.minZ - radius && p.z < w.maxZ + radius);
+  return walls.some(w => (w.minY ?? 0) < 7.5 && w.height > 0 && overlapsFootprint(p, radius, w));
 }
 
 export function moveWithCollisions(position: SpawnPoint, delta: SpawnPoint, radius: number, walls: RectCollider[], bounds: Bounds): SpawnPoint {
@@ -21,11 +22,12 @@ export function moveWithCollisions(position: SpawnPoint, delta: SpawnPoint, radi
 }
 
 export function findPath(start: SpawnPoint, goal: SpawnPoint, walls: RectCollider[], bounds: Bounds, radius = 1.8, cellSize = 5): SpawnPoint[] {
+  walls = walls.filter(w => (w.minY ?? 0) < 7.5 && w.height > 0);
   const cols = Math.ceil((bounds.maxX - bounds.minX) / cellSize), rows = Math.ceil((bounds.maxZ - bounds.minZ) / cellSize);
   const toCell = (p: SpawnPoint) => ({ x: Math.max(0, Math.min(cols - 1, Math.round((p.x - bounds.minX) / cellSize))), z: Math.max(0, Math.min(rows - 1, Math.round((p.z - bounds.minZ) / cellSize))) });
   const fromCell = (x: number, z: number): SpawnPoint => ({ x: bounds.minX + x * cellSize, z: bounds.minZ + z * cellSize });
   const key = (x: number, z: number) => z * cols + x;
-  const connectorWalls = walls.map(w => ({ ...w, minX: w.minX - radius, maxX: w.maxX + radius, minZ: w.minZ - radius, maxZ: w.maxZ + radius }));
+  const connectorWalls = walls.map(w => ({ ...w, minY: 0, minX: w.minX - radius, maxX: w.maxX + radius, minZ: w.minZ - radius, maxZ: w.maxZ + radius }));
   const connectorClear = (a: SpawnPoint, b: SpawnPoint) => !firstSegmentHit({ x: a.x, y: 0.5, z: a.z }, { x: b.x, y: 0.5, z: b.z }, connectorWalls, []);
   const nearestCell = (point: SpawnPoint): { x: number; z: number } | null => {
     const rounded = toCell(point);

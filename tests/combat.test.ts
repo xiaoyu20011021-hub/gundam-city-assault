@@ -2,6 +2,20 @@ import { describe, expect, it } from 'vitest';
 import { WeaponState, MeleeSwing, firstSegmentHit, meleeCanHit } from '../src/gameplay/combat';
 
 describe('combat rules', () => {
+  it('reloads a magazine-fed weapon after its last shot', () => {
+    const state = new WeaponState({ cooldown: 0.1, heatPerShot: 0, cooling: 0, magazine: 2, reloadTime: 0.5 });
+    expect(state.ammo).toBe(2);
+    expect(state.fire()).toBe(true);
+    state.update(0.1);
+    expect(state.fire()).toBe(true);
+    expect(state.ammo).toBe(0);
+    expect(state.reloading).toBe(true);
+    expect(state.fire()).toBe(false);
+    state.update(0.5);
+    expect(state.ammo).toBe(2);
+    expect(state.reloading).toBe(false);
+  });
+
   it('enforces rifle cooldown and recovers after overheating', () => {
     const state = new WeaponState({ cooldown: 0.2, heatPerShot: 36, cooling: 24 });
     expect(state.fire()).toBe(true);

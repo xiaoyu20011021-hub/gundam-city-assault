@@ -12,3 +12,11 @@
 吉姆参考为官方 CONVERGE 的变形比例商品，再适配为本项目的可动 SD 比例。官方商品图仅用于观察；游戏模型由几何代码构建。
 
 `federation-heads.ts` 构建高达／吉姆头部，`gundam.ts` 构建联邦共享结构，`gm.ts` 提供独立定义；`zaku.ts` 构建两种扎古。`geometry.ts` 管理切面装甲、沿曲线排列的动力管与资源释放。
+
+## RX-93 牛高达（2026-10-19）
+
+参考 [官方 SD EX-STANDARD ν Gundam](https://www.gundam.info/product/gunpla/01_2977.html)、[METAL ROBOT魂 ν Gundam](https://tamashiiweb.com/item/15472/) 和 [官方 RX-93 武装说明](https://en.gundam-official.com/feature/pgu-rx93/)。前者确定 SD 方向，后两者辅助核对四片天线、白/深蓝装甲、长盾、步枪及六枚板状浮游炮。游戏模型由几何代码原创构建，不使用官方网格或贴图。
+
+`nu-gundam.ts` 提供独立头部、胸肩腰腿、盾牌及左背六挂点；`nu-models.ts` 构造专属步枪和军刀；`nu-fin-funnel-model.ts` 构造独立炮体及两片可折叠长板。运行规则完全位于远隔武器模块。
+
+本次官方图片 CDN 的多角度像素抓取未全部完成；已核对官方页面及图像链接，并实际渲染检查自制模型的正/侧/背面。模型检视证据见 `validation/nu-model.png`。自动回收补能、独立血量与整场永久损失属于游戏规则，不作为原作设定结论。

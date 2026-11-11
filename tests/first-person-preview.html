@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>第一人称武器组件预览</title>
+<style>
+  body { margin: 0; background: #03060d; color: #edf6ff; font: 14px 'Microsoft YaHei', sans-serif; }
+  canvas { display: block; width: 100vw; height: 100vh; }
+  header { position: fixed; inset: 0 0 auto; padding: 16px; background: #101a28e8; display: flex; align-items: center; flex-wrap: wrap; gap: 14px; }
+  select, button { background: #20374a; color: white; padding: 7px; border: 1px solid #7991a0; }
+  #reticle { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 24px; }
+  output { position: fixed; bottom: 20px; left: 20px; background: #101a28d9; padding: 10px; }
+</style>
+<canvas id="preview"></canvas><div id="reticle">＋</div>
+<header>
+  <strong>武器组件预览（非战斗试玩）</strong>
+  <label>机体 <select id="pilot"><option value="gundam">高达</option><option value="gm">吉姆</option></select></label>
+  <label>武器 <select id="slot"><option value="ranged">光束步枪 / 喷枪</option><option value="alternate-ranged">机枪</option><option value="melee">光束军刀</option></select></label>
+  <label>视角 <select id="view"><option value="first-person">第一人称</option><option value="third-person">第三人称</option></select></label>
+  <label><input id="aim" type="checkbox">瞄准</label>
+  <label><input id="boost" type="checkbox">飞行加速</label>
+  <label><input id="pause" type="checkbox">冻结动画</label>
+  <button id="attack">射击 / 挥刀反馈</button>
+  <button id="save">保存组件截图</button>
+</header>
+<output id="state">载入预览…</output>
+<script type="module">
+  import { GameRenderer } from '/src/core/renderer.ts';
+  import { Actor } from '/src/gameplay/actor.ts';
+  import { ThirdPersonCamera } from '/src/gameplay/camera.ts';
+  import { FirstPersonWeapon } from '/src/gameplay/first-person.ts';
+  import { getMechaDefinition } from '/src/content/mechas/index.ts';
+  import { cityDefinition } from '/src/content/maps/city.ts';
+
+  const el = id => document.getElementById(id);
+  const graphics = new GameRenderer(el('preview'));
+  graphics.setQuality('low');
+  const world = await cityDefinition.createWorld(() => {});
+  graphics.scene.add(world.root);
+  const camera = new ThirdPersonCamera(graphics.camera);
+  let actor, weapon, time = 0, last = performance.now();
+  function pilot() {
+    actor?.dispose(); weapon?.dispose();
+    actor = new Actor('preview-player', getMechaDefinition(el('pilot').value), 'player');
+    actor.position.set(cityDefinition.playerSpawn.x, 0, cityDefinition.playerSpawn.z);
+    weapon = new FirstPersonWeapon(el('pilot').value === 'gm');
+    graphics.scene.add(actor.rig.root);
+    actor.setWeapon(el('slot').value); actor.updateVisual(time, false);
+  }
+  el('pilot').addEventListener('change', pilot);
+  el('slot').addEventListener('change', () => actor.setWeapon(el('slot').value));
+  el('attack').addEventListener('click', () => actor.slot === 'melee' ? actor.swing.start() : weapon.shot());
+  el('save').addEventListener('click', () => {
+    graphics.render(camera.viewMode === 'first-person' ? weapon : undefined, camera.viewMode === 'first-person' ? actor.rig.root : undefined);
+    const link = document.createElement('a');
+    link.download = `first-person-${el('pilot').value}-${actor.slot}.png`;
+    link.href = graphics.renderer.domElement.toDataURL('image/png'); link.click();
+  });
+  pilot();
+  function frame(now) {
+    const dt = Math.min(0.1, (now - last) / 1000); last = now;
+    const aiming = el('aim').checked, boost = el('boost').checked;
+    camera.viewMode = el('view').value;
+    if (!el('pause').checked) {
+      time += dt; actor.tick(dt); actor.boosting = boost; actor.flying = boost; actor.grounded = !boost;
+      actor.updateVisual(time, aiming);
+      camera.update(actor.position, aiming, world.colliders, dt, false, boost, actor.definition.height);
+      weapon.update(actor, graphics.camera, dt, time, aiming);
+    }
+    graphics.followSun(actor.position);
+    graphics.render(camera.viewMode === 'first-person' ? weapon : undefined, camera.viewMode === 'first-person' ? actor.rig.root : undefined);
+    el('state').textContent = `${actor.definition.name} · ${actor.slot} · ${camera.viewMode} · FOV ${graphics.camera.fov.toFixed(1)} · 眼高 ${(graphics.camera.position.y - actor.position.y).toFixed(3)}`;
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+  window.addEventListener('pagehide', () => { actor.dispose(); weapon.dispose(); world.dispose(); graphics.dispose(); }, { once: true });
+</script>
+</html>

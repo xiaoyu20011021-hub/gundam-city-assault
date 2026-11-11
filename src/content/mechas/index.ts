@@ -1,10 +1,12 @@
 import { gundamDefinition } from './gundam';
 import { gmDefinition } from './gm';
+import { nuGundamDefinition } from './nu-gundam';
 import { charZakuDefinition, zakuDefinition } from './zaku';
 import type { MechaDefinition } from './types';
 
 export { createGundamRig, gundamDefinition } from './gundam';
 export { createGmRig, gmDefinition } from './gm';
+export { createNuGundamRig, nuGundamDefinition } from './nu-gundam';
 export { createZakuRig, zakuDefinition, charZakuDefinition } from './zaku';
 export type { MechaDefinition, MechaPose, MechaRig, WeaponSlot } from './types';
 
@@ -13,6 +15,7 @@ export const MECHA_DEFINITIONS: Record<string, MechaDefinition> = {
   gm: gmDefinition,
   zaku: zakuDefinition,
   'char-zaku': charZakuDefinition,
+  'nu-gundam': nuGundamDefinition,
 };
 export const mechaDefinitions = MECHA_DEFINITIONS;
 

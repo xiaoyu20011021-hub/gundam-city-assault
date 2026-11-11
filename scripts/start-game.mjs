@@ -12,7 +12,9 @@ const openBrowser = url => {
 async function ourGame(port) {
   try {
     const response = await fetch(`http://127.0.0.1:${port}/`, { signal: AbortSignal.timeout(600) });
-    return response.ok && (await response.text()).includes('SD GUNDAM · 城市突入');
+    if (!response.ok) return false;
+    const html = await response.text();
+    return html.includes('SD GUNDAM · 月面战线') || html.includes('SD GUNDAM · 城市突入');
   } catch { return false; }
 }
 async function freePort(port) {

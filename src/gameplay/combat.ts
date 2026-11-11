@@ -1,3 +1,6 @@
+import { segmentCollider } from './collider-shape';
+export { segmentBox } from './collider-shape';
+import { colliderIndex } from './collider-index';
 import type { RectCollider } from '../content/maps/types';
 
 export interface Point3 { x: number; y: number; z: number }
@@ -8,22 +11,53 @@ export class WeaponState {
   heat = 0;
   overheated = false;
   cooldown = 0;
+  readonly magazine?: number;
   private coolingDelay = 0;
-  constructor(private readonly config: { cooldown: number; heatPerShot: number; cooling: number }) {}
+  ammo: number | null;
+  reloading = false;
+  private reloadTimer = 0;
+  constructor(private readonly config: { cooldown: number; heatPerShot: number; cooling: number; magazine?: number; reloadTime?: number }) {
+    this.magazine = config.magazine;
+    this.ammo = config.magazine ?? null;
+  }
   fire(): boolean {
-    if (this.cooldown > 1e-6 || this.overheated) return false;
+    if (this.cooldown > 1e-6 || this.overheated || this.reloading) return false;
+    if (this.config.magazine !== undefined && (this.ammo ?? 0) <= 0) {
+      this.startReload();
+      return false;
+    }
     this.cooldown = this.config.cooldown;
     this.coolingDelay = 0.4;
     this.heat = Math.min(100, this.heat + this.config.heatPerShot);
     if (this.heat >= 100) this.overheated = true;
+    if (this.config.magazine !== undefined) {
+      this.ammo = Math.max(0, (this.ammo ?? 0) - 1);
+      if (this.ammo === 0) this.startReload();
+    }
     return true;
   }
   update(dt: number): void {
     this.cooldown = Math.max(0, this.cooldown - dt);
+    if (this.reloading) {
+      this.reloadTimer = Math.max(0, this.reloadTimer - dt);
+      if (this.reloadTimer === 0) {
+        this.reloading = false;
+        this.ammo = this.config.magazine ?? null;
+      }
+    }
     const coolingTime = Math.max(0, dt - this.coolingDelay);
     this.coolingDelay = Math.max(0, this.coolingDelay - dt);
     this.heat = Math.max(0, this.heat - this.config.cooling * coolingTime);
     if (this.overheated && this.heat <= 24) this.overheated = false;
+  }
+  private startReload(): void {
+    if (this.config.magazine === undefined || this.reloading) return;
+    this.reloading = true;
+    this.reloadTimer = this.config.reloadTime ?? 0;
+    if (this.reloadTimer === 0) {
+      this.reloading = false;
+      this.ammo = this.config.magazine;
+    }
   }
 }
 
@@ -49,24 +83,6 @@ export class MeleeSwing {
     if (!this.active || this.victims.has(id)) return false;
     this.victims.add(id); return true;
   }
-}
-
-// Normalized segment/AABB intersection also catches projectiles that travel through
-// the entire building within a single simulation step.
-export function segmentBox(a: Point3, b: Point3, min: Point3, max: Point3): number | null {
-  let enter = 0, exit = 1;
-  for (const axis of ['x', 'y', 'z'] as const) {
-    const delta = b[axis] - a[axis];
-    if (Math.abs(delta) < 1e-8) {
-      if (a[axis] < min[axis] || a[axis] > max[axis]) return null;
-    } else {
-      let t0 = (min[axis] - a[axis]) / delta, t1 = (max[axis] - a[axis]) / delta;
-      if (t0 > t1) [t0, t1] = [t1, t0];
-      enter = Math.max(enter, t0); exit = Math.min(exit, t1);
-      if (enter > exit) return null;
-    }
-  }
-  return enter;
 }
 
 function segmentCylinder(a: Point3, b: Point3, body: HitBody): number | null {
@@ -98,8 +114,7 @@ export function firstSegmentHit(a: Point3, b: Point3, walls: RectCollider[], act
     if (t === null || t < 0 || t > 1 || (nearest && t >= nearest.t)) return;
     nearest = { type, id, t, point: { x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t } };
   };
-  for (const wall of walls) record(segmentBox(a, b,
-    { x: wall.minX, y: 0, z: wall.minZ }, { x: wall.maxX, y: wall.height, z: wall.maxZ }), 'wall');
+  for (const wall of colliderIndex(walls).query(Math.min(a.x, b.x), Math.max(a.x, b.x), Math.min(a.z, b.z), Math.max(a.z, b.z))) record(segmentCollider(a, b, wall), 'wall');
   for (const body of actors) record(segmentCylinder(a, b, body), 'actor', body.id);
   return nearest;
 }
