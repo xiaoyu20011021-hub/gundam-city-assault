@@ -24,13 +24,17 @@ export function assembleRig(parts: RigParts): MechaRig {
   const rig: MechaRig = {
     root, joints, muzzle: weapons.muzzle, bladeTip: weapons.bladeTip,
     setWeapon(slot) {
+      if (slot === 'alternate-ranged' && !weapons.alternateRanged) slot = 'ranged';
       weapon = slot;
       weapons.ranged.visible = slot === 'ranged';
+      if (weapons.alternateRanged) weapons.alternateRanged.visible = slot === 'alternate-ranged';
       weapons.melee.visible = slot === 'melee';
-      if (parts.stowedSaber) parts.stowedSaber.visible = slot === 'ranged';
+      rig.muzzle = slot === 'alternate-ranged' && weapons.alternateMuzzle ? weapons.alternateMuzzle : weapons.muzzle;
+      if (parts.stowedSaber) parts.stowedSaber.visible = slot !== 'melee';
     },
     animate(pose: MechaPose) {
-      const movement = Math.min(1, Math.max(0, Math.abs(pose.speed)));
+      const flight = pose.flightBlend ?? 0;
+      const movement = Math.min(1, Math.max(0, Math.abs(pose.speed))) * (pose.airborne ? 0 : 1);
       const phase = pose.time * (parts.heavy ? 8.5 : 10.5);
       const stride = Math.sin(phase) * movement;
       const idle = Math.sin(pose.time * 2.2);
@@ -70,9 +74,21 @@ export function assembleRig(parts: RigParts): MechaRig {
         joints.rightLeg.rotation.z = -0.08;
         joints.leftArm.rotation.z = 0.18;
       }
+      joints.torso.rotation.x += pose.flightPitch ?? 0;
+      joints.torso.rotation.z += pose.bank ?? 0;
+      joints.torso.position.y += Math.sin(pose.time * 2) * 0.025 * flight;
+      joints.head.rotation.x -= (pose.aimPitch ?? 0) * 0.6 + joints.torso.rotation.x;
+      // Local forward is -Z: upward aim needs a positive X rotation. Compensate
+      // the torso lean so boosting never points the rifle away from the reticle.
+      if (weapon !== 'melee') joints.rightArm.rotation.x = -(pose.aimPitch ?? 0) - joints.torso.rotation.x;
+      if (flight > 0) {
+        joints.leftLeg.rotation.x += flight * 0.08;
+        joints.rightLeg.rotation.x += flight * 0.06;
+      }
       thrusters.forEach((flame, index) => {
-        flame.visible = pose.boosting || pose.airborne;
-        flame.scale.set(1, 1, 0.78 + Math.sin(pose.time * 42 + index) * 0.16 + (pose.boosting ? 0.65 : 0));
+        const thrust = pose.thrust ?? (pose.boosting || pose.airborne ? 0.7 : 0);
+        flame.visible = thrust > 0;
+        flame.scale.set(0.7 + thrust * 0.3, 0.7 + thrust * 0.3, 0.35 + thrust * 1.05 + Math.sin(pose.time * 42 + index) * 0.1);
       });
     },
     dispose() {

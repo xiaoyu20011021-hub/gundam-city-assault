@@ -1,0 +1,2396 @@
+{
+  "sortie": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": true,
+    "quality": "medium",
+    "fps": 37,
+    "audio": "running",
+    "renderer": {
+      "calls": 386,
+      "triangles": 973466,
+      "geometries": 345,
+      "textures": 8
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 0.5666666666666668
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 0,
+      "z": 60,
+      "health": 320,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 0,
+      "flightState": "grounded",
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "altitude": 0
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "docked",
+        "position": {
+          "x": -1.06,
+          "y": 4.007262888808633,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "docked",
+        "position": {
+          "x": -1.4500000000000002,
+          "y": 4.237262888808633,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "docked",
+        "position": {
+          "x": -1.84,
+          "y": 4.467262888808634,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "docked",
+        "position": {
+          "x": -2.23,
+          "y": 4.697262888808633,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "docked",
+        "position": {
+          "x": -2.62,
+          "y": 4.927262888808633,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "docked",
+        "position": {
+          "x": -3.0100000000000002,
+          "y": 5.157262888808633,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      }
+    ],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 2.000171933889454,
+      "y": 5.3479452594891,
+      "z": 72.43983278914656,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "zaku",
+        "x": -112.38949880118344,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -580.559133641232,
+        "screenY": 391.5588899694057,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-1",
+        "type": "zaku",
+        "x": -90.01796753857579,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -327.7694640739972,
+        "screenY": 391.5588899694057,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-2",
+        "type": "zaku",
+        "x": -67.64175796250005,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -74.92693137004397,
+        "screenY": 391.5588899694057,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-3",
+        "type": "zaku",
+        "x": 68.24657688980355,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": 1460.5588099556305,
+        "screenY": 391.5588899694057,
+        "visible": true
+      }
+    ]
+  },
+  "firstPerson": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "first-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": true,
+    "quality": "medium",
+    "fps": 56,
+    "audio": "running",
+    "renderer": {
+      "calls": 324,
+      "triangles": 952114,
+      "geometries": 366,
+      "textures": 8
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 1.6999999999999988
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 0,
+      "z": 60,
+      "health": 320,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 0,
+      "flightState": "grounded",
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "altitude": 0
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "docked",
+        "position": {
+          "x": -1.06,
+          "y": 3.9793174821385655,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "docked",
+        "position": {
+          "x": -1.4500000000000002,
+          "y": 4.209317482138566,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "docked",
+        "position": {
+          "x": -1.84,
+          "y": 4.439317482138566,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "docked",
+        "position": {
+          "x": -2.23,
+          "y": 4.669317482138566,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "docked",
+        "position": {
+          "x": -2.62,
+          "y": 4.899317482138565,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "docked",
+        "position": {
+          "x": -3.0100000000000002,
+          "y": 5.129317482138566,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      }
+    ],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 0,
+      "y": 5.3709999999999996,
+      "z": 60,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "zaku",
+        "x": -106.26999999937819,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -393.1860339420184,
+        "screenY": 409.56599039407746,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-1",
+        "type": "zaku",
+        "x": -83.89999999747866,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -160.5426578102132,
+        "screenY": 409.56599039407746,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-2",
+        "type": "zaku",
+        "x": -61.52999998977572,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": 72.10071838194638,
+        "screenY": 409.56599039407746,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-3",
+        "type": "zaku",
+        "x": 62.15999995853872,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": 1358.4511510719433,
+        "screenY": 409.56599039407746,
+        "visible": true
+      }
+    ]
+  },
+  "flight": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "first-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": true,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 344,
+      "triangles": 957044,
+      "geometries": 371,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 7.899999999999977
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 76.11759094970478,
+      "z": 60,
+      "health": 320,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 0,
+      "flightState": "flight",
+      "velocity": [
+        0,
+        7.683362905316368,
+        0
+      ],
+      "altitude": 76.11759094970478
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "attacking",
+        "position": {
+          "x": -18.53261117322584,
+          "y": 46.60402568508595,
+          "z": 33.88329890060027
+        },
+        "velocity": {
+          "x": -8.094918897934065,
+          "y": -8.831769752945178,
+          "z": -29.672750648816475
+        },
+        "direction": {
+          "x": -0.8319040058202699,
+          "y": -0.24475549932440258,
+          "z": -0.4980265762493512
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 1.1833333333333333,
+        "blocked": false,
+        "targetId": "enemy-0-2"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "deploying",
+        "position": {
+          "x": -22.228619267808845,
+          "y": 66.01960013495244,
+          "z": 49.60292856620434
+        },
+        "velocity": {
+          "x": 30.820777014510057,
+          "y": 0,
+          "z": -8.606956734052034
+        },
+        "direction": {
+          "x": -0.1808985445685764,
+          "y": -0.6736612178454991,
+          "z": -0.7165586369194705
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false,
+        "targetId": "enemy-0-3"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "deploying",
+        "position": {
+          "x": -24.503995588730657,
+          "y": 56.33047087253885,
+          "z": 46.717539284333206
+        },
+        "velocity": {
+          "x": -25.56040083757189,
+          "y": -11.507464760301502,
+          "z": -15.435159986636364
+        },
+        "direction": {
+          "x": -0.30082651011091405,
+          "y": -0.5213285124076754,
+          "z": -0.7985737241891248
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false,
+        "targetId": "enemy-0-2"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "deploying",
+        "position": {
+          "x": -18.358509695274766,
+          "y": 65.2393651305249,
+          "z": 48.234142278890026
+        },
+        "velocity": {
+          "x": 22.23374122423813,
+          "y": 0,
+          "z": -23.014359673334752
+        },
+        "direction": {
+          "x": -0.29610585950043306,
+          "y": -0.6401211424733502,
+          "z": -0.7089190665570526
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false,
+        "targetId": "enemy-0-3"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "deploying",
+        "position": {
+          "x": -9.09063723366875,
+          "y": 61.939947342009624,
+          "z": 44.284031399161414
+        },
+        "velocity": {
+          "x": -9.441207734450927,
+          "y": -15.283867384305836,
+          "z": -26.481446227385277
+        },
+        "direction": {
+          "x": -0.6546785587601859,
+          "y": -0.544037899057992,
+          "z": -0.5248035337993178
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false,
+        "targetId": "enemy-0-2"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "deploying",
+        "position": {
+          "x": -8.261280304815614,
+          "y": 68.58834223365584,
+          "z": 50.130577171152964
+        },
+        "velocity": {
+          "x": 25.807155467825815,
+          "y": 0,
+          "z": -18.920642871199362
+        },
+        "direction": {
+          "x": -0.33022194368605806,
+          "y": -0.6608060251229069,
+          "z": -0.6740095437525098
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0.09999999999999981,
+        "blocked": false,
+        "targetId": "enemy-0-3"
+      }
+    ],
+    "activeProjectiles": 18,
+    "camera": {
+      "x": 0,
+      "y": 81.48859094970477,
+      "z": 60,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "zaku",
+        "x": -84.60301312287794,
+        "y": 39.46219350774268,
+        "z": 14.011462469253313,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 90,
+        "screenX": -350.2282491400784,
+        "screenY": 876.1549382650969,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-1",
+        "type": "zaku",
+        "x": -55.55406586874838,
+        "y": 37.26412327485369,
+        "z": 23.341603385953515,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 90,
+        "screenX": -141.45335797733068,
+        "screenY": 1018.7841125180971,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-2",
+        "type": "zaku",
+        "x": -32.48528885446873,
+        "y": 39.22649124734717,
+        "z": 25.530406924502014,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 90,
+        "screenX": 181.90386195875413,
+        "screenY": 1025.7074864714966,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-3",
+        "type": "zaku",
+        "x": 31.988523230258508,
+        "y": 34.2767437790414,
+        "z": 18.462343385463925,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 90,
+        "screenX": 1148.0056675094647,
+        "screenY": 988.7970607506605,
+        "visible": true
+      }
+    ]
+  },
+  "landing": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "first-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": true,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 401,
+      "triangles": 1001162,
+      "geometries": 373,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 17.116666666666976
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 0,
+      "z": 60,
+      "health": 188,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 0,
+      "flightState": "grounded",
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "altitude": 0
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "recharging",
+        "position": {
+          "x": -1.06,
+          "y": 3.9899012673197163,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": -0.0023604250432885266,
+          "y": -0.9999971650008604,
+          "z": 0.0003136620103135152
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 2.6333333333333417,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "docked",
+        "position": {
+          "x": -1.4500000000000002,
+          "y": 4.219901267319717,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0.3295991557503562,
+          "y": -0.04725958918334047,
+          "z": 0.9429373933400216
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "docked",
+        "position": {
+          "x": -1.84,
+          "y": 4.449901267319717,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0.17643081182060186,
+          "y": -0.9244902805033837,
+          "z": 0.3379199459858777
+        },
+        "health": 12,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "recharging",
+        "position": {
+          "x": -2.23,
+          "y": 4.679901267319717,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": -0.032162473203046126,
+          "y": -0.9991537329492938,
+          "z": 0.025639681178883725
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 2.4666666666666757,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "recharging",
+        "position": {
+          "x": -2.62,
+          "y": 4.909901267319716,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": -0.03942736524849682,
+          "y": -0.998816349130015,
+          "z": 0.028484795596063338
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 2.6000000000000085,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "recharging",
+        "position": {
+          "x": -3.0100000000000002,
+          "y": 5.139901267319717,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": -0.20167532752305145,
+          "y": -0.979430571957691,
+          "z": 0.0065434687360971435
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 3.516666666666672,
+        "blocked": false
+      }
+    ],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 0,
+      "y": 5.3709999999999996,
+      "z": 60,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "zaku",
+        "x": -36.110533567692634,
+        "y": 36.147585449959806,
+        "z": 55.66920417616276,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 90,
+        "screenX": -24637.208858178885,
+        "screenY": -23792.598907035564,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-1",
+        "type": "zaku",
+        "x": -17.20680347185727,
+        "y": 32.593549280629205,
+        "z": 29.171660507268616,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 90,
+        "screenX": 323.81785940806265,
+        "screenY": -306.56443009259795,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-2",
+        "type": "zaku",
+        "x": -24.571169938280413,
+        "y": 40.15826019594796,
+        "z": 32.36976359889503,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 18,
+        "screenX": 65.4712672884784,
+        "screenY": -622.4812193629824,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-3",
+        "type": "zaku",
+        "x": 34.05121203694403,
+        "y": 26.75536639612661,
+        "z": 45.72512490637412,
+        "energy": 100,
+        "flightState": "flight",
+        "health": 6,
+        "screenX": 2521.6292196630543,
+        "screenY": -939.0929502215249,
+        "visible": true
+      }
+    ]
+  },
+  "restart": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": true,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 385,
+      "triangles": 971738,
+      "geometries": 218,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 0.4833333333333333
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 0,
+      "z": 60,
+      "health": 320,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 0,
+      "flightState": "grounded",
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "altitude": 0
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "docked",
+        "position": {
+          "x": -1.06,
+          "y": 4.0057316437173345,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "docked",
+        "position": {
+          "x": -1.4500000000000002,
+          "y": 4.235731643717335,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "docked",
+        "position": {
+          "x": -1.84,
+          "y": 4.465731643717335,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "docked",
+        "position": {
+          "x": -2.23,
+          "y": 4.695731643717335,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "docked",
+        "position": {
+          "x": -2.62,
+          "y": 4.925731643717334,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "docked",
+        "position": {
+          "x": -3.0100000000000002,
+          "y": 5.155731643717335,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      }
+    ],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 2,
+      "y": 5.347917708085351,
+      "z": 72.43755206597532,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "zaku",
+        "x": -112.83863760036455,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -585.3459075411441,
+        "screenY": 391.57460181982697,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-1",
+        "type": "zaku",
+        "x": -90.4644751970436,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -332.5823025807416,
+        "screenY": 391.57460181982697,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-2",
+        "type": "zaku",
+        "x": -68.07759581923446,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -79.67503242930862,
+        "screenY": 391.57460181982697,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-3",
+        "type": "zaku",
+        "x": 68.6391465669024,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": 1464.83045747602,
+        "screenY": 391.57460181982697,
+        "visible": true
+      }
+    ]
+  },
+  "movementAndShot": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": true,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 420,
+      "triangles": 993674,
+      "geometries": 255,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 2.33333333333333
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 0,
+      "z": 48.15152207276802,
+      "health": 320,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 46,
+      "flightState": "grounded",
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "altitude": 0
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "docked",
+        "position": {
+          "x": -1.06,
+          "y": 3.9735713376581536,
+          "z": 49.271522072768015
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "docked",
+        "position": {
+          "x": -1.4500000000000002,
+          "y": 4.203571337658154,
+          "z": 49.271522072768015
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "docked",
+        "position": {
+          "x": -1.84,
+          "y": 4.4335713376581545,
+          "z": 49.271522072768015
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "docked",
+        "position": {
+          "x": -2.23,
+          "y": 4.663571337658154,
+          "z": 49.271522072768015
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "docked",
+        "position": {
+          "x": -2.62,
+          "y": 4.8935713376581536,
+          "z": 49.271522072768015
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "docked",
+        "position": {
+          "x": -3.0100000000000002,
+          "y": 5.123571337658154,
+          "z": 49.271522072768015
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      }
+    ],
+    "activeProjectiles": 2,
+    "camera": {
+      "x": 2,
+      "y": 5.347917708085351,
+      "z": 60.59095908542613,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "zaku",
+        "x": -102.84999999999962,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -703.3876337052247,
+        "screenY": 395.66423351624223,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-1",
+        "type": "zaku",
+        "x": -80.4799999999987,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -401.41127351459716,
+        "screenY": 395.66423351624223,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-2",
+        "type": "zaku",
+        "x": -58.10999999999481,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": -99.43491332392963,
+        "screenY": 395.66423351624223,
+        "visible": true
+      },
+      {
+        "id": "enemy-0-3",
+        "type": "zaku",
+        "x": 58.73999999997918,
+        "y": 0,
+        "z": 0,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 90,
+        "screenX": 1477.942721377256,
+        "screenY": 395.66423351624223,
+        "visible": true
+      }
+    ]
+  },
+  "returnMenu": {
+    "screen": "menu",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "campaign",
+    "aiMode": "classic",
+    "locked": false,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 876,
+      "triangles": 1233334,
+      "geometries": 365,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 4,
+      "kills": 0,
+      "elapsed": 2.9999999999999942
+    },
+    "player": null,
+    "remoteUnits": [],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 13,
+      "y": 8.2,
+      "z": 201.8,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": []
+  },
+  "duelSettings": [
+    [
+      "map",
+      "selene"
+    ],
+    [
+      "pilot",
+      "nu-gundam"
+    ],
+    [
+      "battle-mode",
+      "duel"
+    ],
+    [
+      "sortie-mode",
+      "unlimited"
+    ],
+    [
+      "ai-mode",
+      "enhanced"
+    ],
+    [
+      "quality",
+      "medium"
+    ],
+    [
+      "muted",
+      "on"
+    ]
+  ],
+  "duel": {
+    "screen": "playing",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "duel",
+    "aiMode": "enhanced",
+    "locked": true,
+    "quality": "medium",
+    "fps": 59,
+    "audio": "running",
+    "renderer": {
+      "calls": 405,
+      "triangles": 983110,
+      "geometries": 260,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 1,
+      "kills": 0,
+      "elapsed": 0.4833333333333333
+    },
+    "player": {
+      "type": "nu-gundam",
+      "x": 0,
+      "y": 0,
+      "z": 60,
+      "health": 320,
+      "energy": 100,
+      "slot": "ranged",
+      "yaw": 0,
+      "heat": 0,
+      "flightState": "grounded",
+      "velocity": [
+        0,
+        0,
+        0
+      ],
+      "altitude": 0
+    },
+    "remoteUnits": [
+      {
+        "id": "remote:1:player:nu-fin-funnels:0",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-0",
+        "index": 0,
+        "state": "deploying",
+        "position": {
+          "x": -0.6753727738680644,
+          "y": 5.331588536087702,
+          "z": 76.5233345176844
+        },
+        "velocity": {
+          "x": 0.9157994870568165,
+          "y": 3.1912050572319295,
+          "z": 31.827307796641833
+        },
+        "direction": {
+          "x": 0.6308744937609417,
+          "y": -0.3629707358325348,
+          "z": 0.6857474885488573
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false,
+        "targetId": "enemy-0-0"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:1",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-1",
+        "index": 1,
+        "state": "deploying",
+        "position": {
+          "x": -1.064000848582116,
+          "y": 5.679548215526795,
+          "z": 72.21832857521818
+        },
+        "velocity": {
+          "x": 1.2123595665163345,
+          "y": 4.563951049096566,
+          "z": 31.64965300130376
+        },
+        "direction": {
+          "x": 0.8522180778513764,
+          "y": -0.5147174423278034,
+          "z": 0.09375661228324628
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false,
+        "targetId": "enemy-0-0"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:2",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-2",
+        "index": 2,
+        "state": "deploying",
+        "position": {
+          "x": -1.84,
+          "y": 11.394364221978371,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 31.999999999999993,
+          "z": 0
+        },
+        "direction": {
+          "x": 0.46115176937892793,
+          "y": -0.7012553020909479,
+          "z": -0.5436727387758373
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0.040000000000000036,
+        "blocked": false,
+        "targetId": "enemy-0-0"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:3",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-3",
+        "index": 3,
+        "state": "deploying",
+        "position": {
+          "x": -1.5855132261650333,
+          "y": 6.136914667522327,
+          "z": 63.26634089118792
+        },
+        "velocity": {
+          "x": 8.28936403338545,
+          "y": 18.550063447633143,
+          "z": 24.72208708848811
+        },
+        "direction": {
+          "x": 0.2382281435520218,
+          "y": -0.22345285575991924,
+          "z": -0.945154047165061
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0.29333333333333333,
+        "blocked": false,
+        "targetId": "enemy-0-0"
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:4",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-4",
+        "index": 4,
+        "state": "docked",
+        "position": {
+          "x": -2.62,
+          "y": 4.926038737668411,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      },
+      {
+        "id": "remote:1:player:nu-fin-funnels:5",
+        "ownerId": "player",
+        "team": "player",
+        "equipmentId": "nu-fin-funnels",
+        "model": "nu-fin-funnel",
+        "mountId": "funnel-5",
+        "index": 5,
+        "state": "docked",
+        "position": {
+          "x": -3.0100000000000002,
+          "y": 5.1560387376684105,
+          "z": 61.12
+        },
+        "velocity": {
+          "x": 0,
+          "y": 0,
+          "z": 0
+        },
+        "direction": {
+          "x": 0,
+          "y": 0,
+          "z": -1
+        },
+        "health": 48,
+        "maxHealth": 48,
+        "radius": 0.5,
+        "height": 0.8,
+        "cooldown": 0,
+        "blocked": false
+      }
+    ],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 2.0007705542331875,
+      "y": 5.348041184910402,
+      "z": 72.44777355808434,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": [
+      {
+        "id": "enemy-0-0",
+        "type": "char-zaku",
+        "x": 0,
+        "y": 0,
+        "z": 83.99495407542439,
+        "energy": 100,
+        "flightState": "grounded",
+        "health": 300,
+        "screenX": 856.5743298826809,
+        "screenY": 236.3287747405294,
+        "visible": false
+      }
+    ]
+  },
+  "gallery": {
+    "screen": "gallery",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "duel",
+    "aiMode": "enhanced",
+    "locked": false,
+    "quality": "medium",
+    "fps": 36,
+    "audio": "running",
+    "renderer": {
+      "calls": 874,
+      "triangles": 1235286,
+      "geometries": 367,
+      "textures": 9
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 1,
+      "kills": 0,
+      "elapsed": 0.49999999999999994
+    },
+    "player": null,
+    "remoteUnits": [],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 4,
+      "y": 11.6,
+      "z": 213,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": []
+  },
+  "switches": [
+    {
+      "id": "city",
+      "renderer": {
+        "calls": 631,
+        "triangles": 468244,
+        "geometries": 242,
+        "textures": 4
+      },
+      "battleMode": "duel",
+      "aiMode": "enhanced"
+    },
+    {
+      "id": "selene",
+      "renderer": {
+        "calls": 882,
+        "triangles": 1233698,
+        "geometries": 342,
+        "textures": 7
+      },
+      "battleMode": "duel",
+      "aiMode": "enhanced"
+    },
+    {
+      "id": "city",
+      "renderer": {
+        "calls": 631,
+        "triangles": 468244,
+        "geometries": 242,
+        "textures": 4
+      },
+      "battleMode": "duel",
+      "aiMode": "enhanced"
+    },
+    {
+      "id": "selene",
+      "renderer": {
+        "calls": 882,
+        "triangles": 1233698,
+        "geometries": 342,
+        "textures": 7
+      },
+      "battleMode": "duel",
+      "aiMode": "enhanced"
+    }
+  ],
+  "errors": [],
+  "final": {
+    "screen": "menu",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "duel",
+    "aiMode": "enhanced",
+    "locked": false,
+    "quality": "medium",
+    "fps": 44,
+    "audio": "running",
+    "renderer": {
+      "calls": 882,
+      "triangles": 1233698,
+      "geometries": 342,
+      "textures": 7
+    },
+    "mission": {
+      "status": "playing",
+      "wave": 1,
+      "remaining": 1,
+      "kills": 0,
+      "elapsed": 0.49999999999999994
+    },
+    "player": null,
+    "remoteUnits": [],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 13,
+      "y": 8.2,
+      "z": 201.8,
+      "yaw": 0,
+      "pitch": 0.1
+    },
+    "enemies": []
+  },
+  "galleryAfterFix": {
+    "screen": "gallery",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "campaign",
+    "aiMode": "enhanced",
+    "locked": false,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 838,
+      "triangles": 1216818,
+      "geometries": 350,
+      "textures": 8
+    },
+    "mission": {
+      "status": "idle",
+      "wave": 1,
+      "remaining": 0,
+      "kills": 0,
+      "elapsed": 0
+    },
+    "player": null,
+    "remoteUnits": [],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 0,
+      "y": 15.5,
+      "z": 208,
+      "yaw": 0,
+      "pitch": 0.13
+    },
+    "enemies": []
+  },
+  "galleryHeaderColor": "rgb(240, 247, 240)",
+  "verification": {
+    "testFiles": 32,
+    "testsPassed": 176,
+    "build": "passed",
+    "diffCheckExit": 0
+  },
+  "finalMenu": {
+    "screen": "menu",
+    "map": {
+      "id": "selene",
+      "name": "SELENE · 冯·布朗月面都市",
+      "bounds": {
+        "minX": -140,
+        "maxX": 140,
+        "minZ": -140,
+        "maxZ": 140
+      },
+      "colliders": 1384
+    },
+    "viewMode": "third-person",
+    "battleMode": "campaign",
+    "aiMode": "enhanced",
+    "locked": false,
+    "quality": "medium",
+    "fps": 60,
+    "audio": "running",
+    "renderer": {
+      "calls": 875,
+      "triangles": 1231606,
+      "geometries": 358,
+      "textures": 8
+    },
+    "mission": {
+      "status": "idle",
+      "wave": 1,
+      "remaining": 0,
+      "kills": 0,
+      "elapsed": 0
+    },
+    "player": null,
+    "remoteUnits": [],
+    "activeProjectiles": 0,
+    "camera": {
+      "x": 13,
+      "y": 8.2,
+      "z": 201.8,
+      "yaw": 0,
+      "pitch": 0.13
+    },
+    "enemies": []
+  }
+}

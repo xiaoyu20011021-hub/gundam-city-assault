@@ -1,9 +1,51 @@
 import { describe, expect, it } from 'vitest';
 import { Box3, Mesh, Vector3 } from 'three';
 import { MECHA_DEFINITIONS } from '../src/content/mechas';
+import { WEAPON_DEFINITIONS } from '../src/content/weapons';
 
 describe('modular mecha rigs', () => {
-  it.each(['gundam', 'zaku', 'char-zaku', 'dom'])('creates %s grounded at its feet with a forward muzzle', (id) => {
+  it('offers the Zaku machine gun as an alternate ranged weapon only to Federation suits', () => {
+    expect(MECHA_DEFINITIONS.gundam.alternateRangedWeapon).toBe('zaku-machinegun');
+    expect(MECHA_DEFINITIONS.gm.alternateRangedWeapon).toBe('zaku-machinegun');
+    expect(MECHA_DEFINITIONS.zaku.alternateRangedWeapon).toBeUndefined();
+    expect(MECHA_DEFINITIONS['char-zaku'].alternateRangedWeapon).toBeUndefined();
+  });
+
+  it('defines a 45-round magazine for the shared Zaku machine gun', () => {
+    expect(WEAPON_DEFINITIONS['zaku-machinegun'].magazine).toBe(45);
+  });
+
+  it('switches the Federation machine-gun mesh and muzzle with the alternate ranged slot', () => {
+    const rig = MECHA_DEFINITIONS.gundam.createRig();
+    const rifle = rig.root.getObjectByName('ranged-weapon')!;
+    const machinegun = rig.root.getObjectByName('alternate-ranged-weapon')!;
+    const melee = rig.root.getObjectByName('melee-weapon')!;
+    expect(machinegun.visible).toBe(false);
+
+    rig.setWeapon('alternate-ranged');
+    expect(rifle.visible).toBe(false);
+    expect(machinegun.visible).toBe(true);
+    expect(melee.visible).toBe(false);
+    expect(rig.muzzle.name).toBe('alternate-muzzle');
+
+    rig.setWeapon('melee');
+    expect(machinegun.visible).toBe(false);
+    expect(melee.visible).toBe(true);
+    rig.dispose();
+  });
+
+  it.each(['gundam', 'gm', 'zaku', 'char-zaku', 'dom'])('%s points its gun along vertical aim even while leaning into flight', id => {
+    const rig = MECHA_DEFINITIONS[id].createRig();
+    for (const pitch of [-0.6, 0.6]) {
+      rig.animate({ time: 0, speed: 1, aiming: true, attack: 0, boosting: true, airborne: true, hurt: 0,
+        aimPitch: pitch, flightPitch: -0.17, flightBlend: 1 });
+      rig.root.updateMatrixWorld(true);
+      const direction = rig.muzzle.getWorldDirection(new Vector3());
+      expect(direction.y * -Math.sign(pitch)).toBeGreaterThan(0.45);
+    }
+    rig.dispose();
+  });
+  it.each(['gundam', 'gm', 'zaku', 'char-zaku', 'dom'])('creates %s grounded at its feet with a forward muzzle', (id) => {
     const rig = MECHA_DEFINITIONS[id].createRig();
     rig.root.updateMatrixWorld(true);
     const bounds = new Box3().setFromObject(rig.root);
@@ -14,6 +56,24 @@ describe('modular mecha rigs', () => {
     expect(muzzle.y).toBeGreaterThan(2);
     expect(muzzle.z).toBeLessThan(-1);
     expect(rig.muzzle.getWorldDirection(new Vector3()).z).toBeLessThan(-0.9);
+    rig.dispose();
+  });
+
+  it('equips GM with a working spray gun and a single drawable beam saber', () => {
+    const definition = MECHA_DEFINITIONS.gm;
+    expect(definition).toBeDefined();
+    expect(WEAPON_DEFINITIONS[definition.rangedWeapon].name).toBe('光束喷枪');
+    expect(WEAPON_DEFINITIONS[definition.meleeWeapon].kind).toBe('melee');
+    const rig = definition.createRig();
+    const stowed = rig.root.getObjectByName('stowed-saber-1')!;
+    expect(stowed).toBeDefined();
+    expect(rig.root.getObjectByName('stowed-saber--1')).toBeUndefined();
+    rig.setWeapon('melee');
+    expect(stowed.visible).toBe(false);
+    expect(rig.root.getObjectByName('ranged-weapon')!.visible).toBe(false);
+    expect(rig.root.getObjectByName('melee-weapon')!.visible).toBe(true);
+    rig.setWeapon('ranged');
+    expect(stowed.visible).toBe(true);
     rig.dispose();
   });
 

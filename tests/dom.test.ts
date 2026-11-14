@@ -84,12 +84,12 @@ describe('bazooka enemy behavior', () => {
     expect(stepEnemy(dom, player, 1 / 60, 1, [], bounds).fire).toBe(false);
     actors.dispose();
   });
-  it.each([30, 120])('telegraphs before firing and keeps the original dodgeable aim point at %s Hz', hz => {
+  it.each([{ hz: 30, mode: 'classic' as const }, { hz: 120, mode: 'classic' as const }, { hz: 30, mode: 'enhanced' as const }, { hz: 120, mode: 'enhanced' as const }])('telegraphs before firing and keeps the original dodgeable aim point at $hz Hz in $mode AI', ({ hz, mode }) => {
     const actors = makeActors(), { dom, player } = actors;
     let firedAt = 0;
     for (let frame = 0; frame < hz * 2; frame++) {
       if (frame === 2) player.position.x = 12;
-      const action = stepEnemy(dom, player, 1 / hz, frame / hz, [], bounds);
+      const action = stepEnemy(dom, player, 1 / hz, frame / hz, [], bounds, false, { mode, projectiles: [] });
       if (action.fire) { firedAt = (frame + 1) / hz; break; }
     }
     expect(firedAt).toBeGreaterThanOrEqual(bazooka.aimTime! - 1e-6);
@@ -118,6 +118,15 @@ describe('bazooka enemy behavior', () => {
 });
 
 describe('rocket collision and splash', () => {
+  it('routes rocket blast damage to a Fin Funnel without applying a duplicate direct hit', () => {
+    const actors = makeActors(), shots = new ProjectileSystem(); let health = 100, explosions = 0, impacts = 0;
+    const target = { id: 'fin-funnel', team: 'player', kind: 'remote-unit' as const,
+      isAlive: () => health > 0, hitBody: () => ({ id: 'fin-funnel', x: 0, y: 2, z: -10, radius: 0.5, height: 1 }) };
+    shots.fire(actors.dom, new Vector3(0, 2.5, 0), new Vector3(0, 0, -1), bazooka);
+    shots.update(0.5, [actors.dom], [], (_point, _damage, _target, blast) => { if (blast) explosions++; }, [target], (_point, damage) => { health -= damage; impacts++; });
+    expect(explosions).toBe(1); expect(impacts).toBe(1); expect(health).toBe(100 - bazooka.damage);
+    shots.dispose(); actors.dispose();
+  });
   it('applies one direct hit, splash falloff, and no friendly damage', () => {
     const actors = makeActors(), { dom, player } = actors;
     player.position.set(0, 0, -10);

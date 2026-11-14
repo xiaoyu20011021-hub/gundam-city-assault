@@ -124,7 +124,7 @@ export function createDomRig(): MechaRig {
     torso.rotation.z = Math.sin(pose.time * 2.3) * moving * 0.025 + Math.sin(pose.time * 65) * pose.hurt * 0.06;
     hoverJets.forEach(jet => { jet.visible = moving > 0.08 || pose.boosting; });
     if (weapons.ranged.visible) {
-      arms[1].rotation.set(-(pose.recoil ?? 0) * 0.12, 0, 0);
+      arms[1].rotation.set(-(pose.aimPitch ?? 0) - torso.rotation.x - (pose.recoil ?? 0) * 0.12, 0, 0);
       arms[0].rotation.x = -0.22;
     }
     eye.position.x = pose.aiming ? 0 : Math.sin(pose.time * 0.75) * 0.44;
@@ -135,5 +135,5 @@ export function createDomRig(): MechaRig {
 
 export const domDefinition: MechaDefinition = {
   id: 'dom', name: 'MS-09 大魔', maxHealth: 240, speed: 7.2, boostSpeed: 16,
-  radius: 1.65, height: 6.7, rangedWeapon: 'giant-bazooka', meleeWeapon: 'heat-saber', createRig: createDomRig,
+  flightSpeed: 7.2, flightBoostSpeed: 16, radius: 1.65, height: 6.7, rangedWeapon: 'giant-bazooka', meleeWeapon: 'heat-saber', createRig: createDomRig,
 };

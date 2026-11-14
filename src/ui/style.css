@@ -123,10 +123,15 @@ select {
 }
 .menu-content {
   position: absolute;
-  top: 21%;
+  top: max(90px, 14%);
+  bottom: 62px;
   left: 7%;
   width: 340px;
   max-width: 35vw;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  pointer-events: auto;
+  padding-right: 6px;
 }
 .eyebrow {
   font-family: var(--mono);
@@ -281,12 +286,12 @@ p {
   right: 6%;
   bottom: 19%;
   text-align: right;
-  color: #233e49;
-  text-shadow: 0 1px 12px #e3e9d6aa;
+  color: #d8e8ed;
+  text-shadow: 0 2px 12px #030a12;
 }
 .hero-line {
   display: block;
-  background: #315968;
+  background: #72d8ed;
   width: 28px;
   height: 2px;
   margin: 0 0 13px auto;
@@ -425,9 +430,37 @@ p {
   left: 5%;
   right: 5%;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: 18px;
 }
+.pilot-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 16px;
+  color: #c3d8d8;
+  font-size: 11px;
+}
+.pilot-select select {
+  padding: 9px 12px;
+  background: #203a44;
+  color: #edfff8;
+  border: 1px solid #91b8b777;
+  font: inherit;
+}
+.ai-description {
+  color: #abc9c7;
+  font-size: 10px;
+  line-height: 1.7;
+  margin: -6px 0 14px;
+}
+.pause-panel > .ai-description { margin: 10px 0 0; color: var(--mint); }
+.gallery-actions .sortie-button {
+  background: var(--mint);
+  font-weight: 700;
+}
+.gallery-actions .sortie-button:disabled { opacity: 0.65; cursor: default; }
 .archive-card {
   position: relative;
   background: #172c38e8;
@@ -473,11 +506,6 @@ p {
 .char-card b {
   color: var(--accent);
 }
-.dom-card b { color: #cdb6ff; }
-.dom-card.active { border-color: #cdb6ff; }
-.enemy-marker.charging { color: #ffba70; }
-.enemy-marker.charging > span { background: #4a241ee8; padding: 5px 9px; }
-#toast.rocket-warning { color: #ffe1ac; background: #4a251de8; border: 1px solid #ffb76a; padding: 9px 16px; }
 .gallery-actions {
   position: absolute;
   bottom: 29px;
@@ -1071,7 +1099,7 @@ kbd {
 }
 @media (max-height: 760px) {
   .menu-content {
-    top: 18%;
+    top: max(80px, 12%);
   }
   .menu-content h1 {
     font-size: 72px;
@@ -1156,7 +1184,7 @@ kbd {
 }
 @media (max-width: 650px) {
   .menu-content {
-    top: 18%;
+    top: max(80px, 12%);
     max-width: none;
     width: 70%;
     left: 8%;
@@ -1209,7 +1237,6 @@ kbd {
   .gallery-cards {
     left: 4%;
     right: 4%;
-    grid-template-columns: repeat(2, 1fr);
     gap: 5px;
     bottom: 85px;
   }
@@ -1310,3 +1337,57 @@ kbd {
     font-size: 28px;
   }
 }
+
+.flight-status { position: absolute; left: 42px; bottom: 218px; width: 285px; padding: 12px 15px; border-left: 2px solid rgba(162,244,213,.35); background: linear-gradient(90deg, rgba(9,25,29,.8), rgba(9,25,29,.2)); color: var(--paper); }
+.flight-status > div { display: flex; align-items: baseline; justify-content: space-between; margin: 7px 0; }
+.flight-status strong { font-size: 21px; font-weight: 650; }
+.flight-status > div > span { font-size: 11px; color: #bfd2d3; }
+.flight-status b { font: 15px var(--mono); color: var(--mint); }
+.flight-status small { display: block; font-size: 10px; color: #bfd2d3; line-height: 1.6; }
+.flight-status.airborne { border-color: var(--mint); }
+.flight-status.low-energy { border-color: #ffb36b; }
+.flight-status.low-energy small, .flight-status.low-energy strong { color: #ffb36b; }
+.boost-track i.critical { background: #ffb36b; }
+.remote-status { position: absolute; left: 42px; top: 114px; width: 284px; padding: 12px; border-left: 2px solid #e4ba64; background: rgba(8, 24, 30, .84); color: var(--paper); }
+.remote-status[hidden] { display: none; }
+.remote-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 10px; }
+.remote-heading > span { font: 10px var(--mono); color: #ebce8c; letter-spacing: .14em; }
+.remote-heading > b { font-size: 10px; font-weight: 500; }
+.remote-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.remote-unit { padding: 7px; background: rgba(223, 228, 214, .06); border: 1px solid rgba(223, 228, 214, .13); }
+.remote-unit > div:first-child { display: flex; justify-content: space-between; align-items: center; }
+.remote-unit strong { font: 15px var(--mono); color: #ebce8c; }
+.remote-unit span, .remote-unit small { font-size: 9px; color: #d1dcd5; }
+.remote-unit small { display: block; margin-top: 5px; }
+.remote-health { margin-top: 7px; height: 3px; background: #334247; }
+.remote-health > i { display: block; height: 100%; background: #9df5db; }
+.remote-unit.critical .remote-health > i { background: #ff986b; }
+.remote-unit.lost { opacity: .48; }
+.remote-unit.lost strong, .remote-unit.lost span { color: #d49687; }
+.remote-note { display: block; margin-top: 9px; font-size: 9px; color: #b8c7c6; line-height: 1.5; }
+.remote-notice { position: absolute; left: 50%; top: 26%; transform: translateX(-50%); color: #ffd5ac; background: rgba(43,22,13,.8); padding: 9px 16px; font-size: 13px; opacity: 0; transition: opacity .2s; }
+.remote-notice.visible { opacity: 1; }
+.remote-marker { width: 48px; opacity: .85; }
+.remote-marker > span { color: #9df5db; }
+.remote-marker > div > i { background: #9df5db; }
+.archive-card.nu-card { border-color: rgba(228,186,100,.4); }
+@media (max-width: 900px), (max-height: 650px) { .remote-status { left: 22px; top: 94px; width: 244px; padding: 9px; } .remote-grid { gap: 4px; } }
+.quick-controls { flex-wrap: wrap; max-width: calc(100vw - 80px); }
+.sortie-settings { display: grid; grid-template-columns: 1fr 1fr; gap: 9px 10px; margin-bottom: 16px; }
+#ui[data-map="selene"] .gallery-header { color: var(--paper); text-shadow: 0 2px 12px #081c29; }
+#ui[data-map="selene"] .gallery-header p, #ui[data-map="selene"] .gallery-header .micro-label { color: #c4dcdb; }
+.sortie-settings .pilot-select { display: flex; flex-direction: column; align-items: stretch; gap: 5px; margin: 0; min-width: 0; }
+.sortie-settings .pilot-select select { width: 100%; min-width: 0; max-width: 100%; }
+.sortie-settings .map-select, .sortie-settings .ai-description { grid-column: 1 / -1; }
+.sortie-settings .ai-description { margin: 0; }
+.loading-map-choice { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); width: min(400px, 88vw); padding: 12px; background: #10212bee; pointer-events: auto; }
+.loading-map-choice .pilot-select { display: flex; flex-direction: column; gap: 8px; }
+.loading-map-choice select { width: 100%; }
+@media (min-height: 760px) { .menu-content { top: max(86px, 10%); } .menu-content h1 { font-size: clamp(56px, 5.5vw, 80px); margin: 17px 0; } .sortie-details { margin: 17px 0; } }
+@media (max-width: 900px), (max-height: 650px) { .flight-status { left: 22px; bottom: 175px; width: 260px; padding: 8px 12px; } }
+
+/* Dom artillery warning and six-suit archive. */
+.dom-card b { color: #cdb6ff; }
+.dom-card.active { border-color: #cdb6ff; }
+#toast.rocket-warning { color: #ffe1ac; background: #4a251de8; border: 1px solid #ffb76a; padding: 9px 16px; }
+@media (max-width: 1100px) { .gallery-cards { grid-template-columns: repeat(6, minmax(170px, 1fr)); overflow-x: auto; padding-bottom: 7px; } }

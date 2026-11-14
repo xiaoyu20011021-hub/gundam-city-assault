@@ -11,8 +11,8 @@ export class GameInput {
     const options = { signal: this.abort.signal };
     document.addEventListener('keydown', e => {
       if (!this.locked) return;
-      if (['Space', 'Tab', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
-      if (!this.keys.has(e.code)) this.pressed.add(e.code);
+      if (['Space', 'Tab', 'KeyF', 'KeyW', 'KeyA', 'KeyS', 'KeyD', 'ControlLeft', 'ControlRight', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+      if (!e.repeat && !this.keys.has(e.code)) this.pressed.add(e.code);
       this.keys.add(e.code);
     }, options);
     document.addEventListener('keyup', e => this.keys.delete(e.code), options);

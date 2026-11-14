@@ -1,7 +1,7 @@
 import {
   BufferGeometry, Color, CylinderGeometry, ExtrudeGeometry, Group, Matrix4,
   Mesh, MeshStandardMaterial, SphereGeometry, Shape, TorusGeometry, TubeGeometry,
-  CatmullRomCurve3, Vector3, type Object3D, type Material,
+  CatmullRomCurve3, Float32BufferAttribute, Vector3, type Object3D, type Material,
 } from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
@@ -76,6 +76,33 @@ export class GeometryResources {
     return this.geometry(key, () => new TubeGeometry(new CatmullRomCurve3(points.map((point) => new Vector3(...point))), 16, radius, 6, false));
   }
 
+  /** Eight-sided armor rings, from bottom to top: y, half width, half depth, z offset. */
+  armor(rings: readonly (readonly [number, number, number, number])[], chamfer = 0.22): BufferGeometry {
+    return this.geometry(`armor/${rings.flat().join(',')}/${chamfer}`, () => {
+      const vertices: number[] = [];
+      const contours = rings.map(([y, w, d, z]) => {
+        const c = Math.min(w, d) * chamfer;
+        return [[-w + c, y, z - d], [w - c, y, z - d], [w, y, z - d + c],
+          [w, y, z + d - c], [w - c, y, z + d], [-w + c, y, z + d],
+          [-w, y, z + d - c], [-w, y, z - d + c]];
+      });
+      const triangle = (a: number[], b: number[], c: number[]) => vertices.push(...a, ...b, ...c);
+      for (let r = 0; r < contours.length - 1; r++) for (let i = 0; i < 8; i++) {
+        const j = (i + 1) % 8, lower = contours[r], upper = contours[r + 1];
+        triangle(lower[i], upper[i], lower[j]); triangle(lower[j], upper[i], upper[j]);
+      }
+      for (let i = 0; i < 8; i++) {
+        const j = (i + 1) % 8, top = rings.length - 1;
+        triangle([0, rings[0][0], rings[0][3]], contours[0][i], contours[0][j]);
+        triangle([0, rings[top][0], rings[top][3]], contours[top][j], contours[top][i]);
+      }
+      const result = new BufferGeometry();
+      result.setAttribute('position', new Float32BufferAttribute(vertices, 3));
+      result.computeVertexNormals();
+      return result;
+    });
+  }
+
   dispose(): void {
     if (this.disposed) return;
     this.disposed = true;
@@ -113,6 +140,19 @@ export function rod(parent: Object3D, resources: GeometryResources, from: Vec3, 
   result.position.copy(start.add(end).multiplyScalar(0.5));
   result.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), direction.normalize());
   return result;
+}
+
+/** Couplings follow the same curve as the core, avoiding floating beads. */
+export function powerPipe(parent: Object3D, resources: GeometryResources, points: Vec3[], radius: number, material: Material, core: Material, count = 12): void {
+  part(parent, resources.tube(points, radius * 0.72), core);
+  const curve = new CatmullRomCurve3(points.map(p => new Vector3(...p)));
+  const length = curve.getLength();
+  for (let i = 0; i < count; i++) {
+    const t = (i + 0.5) / count;
+    const band = part(parent, resources.cylinder(radius, radius, length / count * 0.78, 10), material);
+    band.position.copy(curve.getPointAt(t));
+    band.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), curve.getTangentAt(t).normalize());
+  }
 }
 
 /** Merge decorative armor by material, retaining named articulated subgroups. */
