@@ -194,7 +194,7 @@ export class Game {
     this.exhibit.forEach((actor, index) => {
       const gallery = this.mode === 'gallery';
       const hero = actor.definition.id === this.selectedPlayer;
-      actor.rig.root.visible = gallery ? actor.definition.id === this.selectedPreview : actor.definition.id !== 'dom';
+      actor.rig.root.visible = gallery ? actor.definition.id === this.selectedPreview : hero || actor.definition.id !== 'dom';
       const backdropX = actor.definition.id === 'zaku' ? 8 : actor.definition.id === 'char-zaku' ? -13 : actor.definition.id === 'nu-gundam' ? -21 : -6;
       actor.position.set(spawn.x + (gallery ? 0 : hero ? 0 : backdropX),
         0, spawn.z + (gallery || hero || this.map.previewSpawn ? 0 : -8));
@@ -294,6 +294,7 @@ export class Game {
       : safeFirstPersonOrigin(player.position.clone().add(new Vector3(0, player.definition.height * .55, 0)),
         player.rig.muzzle.getWorldPosition(new Vector3()), target, this.world!.colliders, bodies);
     this.projectiles.fire(player, origin, target.sub(origin).normalize(), weapon);
+    player.recoil = weapon.blastRadius ? 1 : 0;
     this.effects.burst(origin, weapon.color, 4, 0.15);
     if (firstPerson) firstPerson.shot();
     this.bus.emit('shot', { ownerId: player.id, weapon: weapon.id });
@@ -420,8 +421,7 @@ export class Game {
     }
     this.projectiles.update(dt, alive, walls, (position, amount, target, blastRadius) => {
       if (blastRadius) {
-        this.effects.burst(position, 0xffaa52, 30, 1.0);
-        this.effects.burst(position, 0x686571, 12, 0.48, true);
+        this.effects.explosion(position, blastRadius);
         this.audio.play('explosion', 0.28, 0.8);
         return;
       }

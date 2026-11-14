@@ -4,6 +4,7 @@ import { Game } from '../src/gameplay/game';
 import { ThirdPersonCamera } from '../src/gameplay/camera';
 import { GameRenderer } from '../src/core/renderer';
 import { Mission } from '../src/gameplay/mission';
+import { WEAPON_DEFINITIONS } from '../src/content/weapons';
 
 function subject() {
   const graphics = { scene: new Scene(), camera: new PerspectiveCamera() };
@@ -22,6 +23,39 @@ function subject() {
     stepSoundTime: 1, boostSoundTime: 1,
   });
 }
+
+it('launches Dom, moves, fires three rockets, reloads, switches views and uses its heat saber', async () => {
+  const game = subject(); game.selectedPlayer = 'dom'; await game.start();
+  expect(game.player.definition.id).toBe('dom'); expect(game.player.team).toBe('player');
+  expect(game.firstPersonWeapon.scene.getObjectByName('giant-bazooka')).toBeDefined();
+  expect(game.firstPersonWeapon.scene.getObjectByName('heat-saber')).toBeDefined();
+  expect(game.firstPersonWeapon.scene.getObjectByName('alternate-ranged-weapon')).toBeUndefined();
+  game.input.keys.add('KeyW');
+  const before = game.player.position.clone(); game.simulation(1 / 60);
+  expect(game.player.position.distanceTo(before)).toBeGreaterThan(0);
+  game.input.keys.clear(); game.input.takeKey = (key: string) => key === 'KeyT';
+  game.simulation(1 / 60); game.input.takeKey = () => false;
+  expect(game.camera.viewMode).toBe('first-person');
+  const shots: string[] = [];
+  game.projectiles.fire = (_owner: unknown, _origin: unknown, _direction: unknown, weapon: { id: string }) => shots.push(weapon.id);
+  game.effects.burst = () => {}; game.input.firing = true;
+  const weapon = WEAPON_DEFINITIONS['giant-bazooka'];
+  for (let i = 0; i < 3; i++) {
+    game.firePlayer(); game.firePlayer();
+    if (i < 2) game.player.tick(weapon.cooldown);
+  }
+  expect(shots).toEqual(Array(3).fill('giant-bazooka'));
+  expect(game.player.rifle.ammo).toBe(0); expect(game.player.rifle.reloading).toBe(true);
+  game.player.setWeapon('melee'); game.firePlayer();
+  expect(game.player.swing.running).toBe(true);
+  game.player.tick(weapon.reloadTime!);
+  expect(game.player.rifle.ammo).toBe(3); expect(game.player.rifle.reloading).toBe(false);
+  game.player.setWeapon('ranged'); game.player.setWeapon('alternate-ranged');
+  expect(game.player.slot).toBe('ranged');
+  game.firePlayer(); expect(shots).toHaveLength(4);
+  await game.start(); expect(game.player.definition.id).toBe('dom'); expect(game.player.rifle.ammo).toBe(3);
+  game.clearActors();
+});
 
 it('toggles during real simulation, preserves combat state, retains on resume and resets on restart', async () => {
   const game = subject(); await game.start();

@@ -135,5 +135,5 @@ export function createDomRig(): MechaRig {
 
 export const domDefinition: MechaDefinition = {
   id: 'dom', name: 'MS-09 大魔', maxHealth: 240, speed: 7.2, boostSpeed: 16,
-  flightSpeed: 7.2, flightBoostSpeed: 16, radius: 1.65, height: 6.7, rangedWeapon: 'giant-bazooka', meleeWeapon: 'heat-saber', createRig: createDomRig,
+  flightSpeed: 7.2, flightBoostSpeed: 16, radius: 1.65, height: 6.7, rangedWeapon: 'giant-bazooka', meleeWeapon: 'heat-saber', weaponModels: createDomWeapons, createRig: createDomRig,
 };

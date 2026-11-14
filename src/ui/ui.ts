@@ -120,7 +120,7 @@ export class GameUI {
           </details>
           <details class="menu-options menu-help">
             <summary>操作指南<span>键盘与鼠标</span></summary>
-            ${controls}
+            ${controls}<p class="ai-description">大魔火箭：瞄准敌人附近自动追踪，3 发后自动装填；掩体可切断追踪。</p>
           </details>
         </div>
         <div class="menu-launch">
@@ -131,7 +131,7 @@ export class GameUI {
       </section>
       <div class="hero-caption"><span class="micro-label">当前出击机体 / ${pilot.role}</span><h2>${pilot.code}<span>${pilot.english}</span></h2><p>${pilot.weapons}</p></div>
       <div class="menu-footer"><span>${this.map.subtitle}</span><span>单人作战 · 电脑键鼠</span></div>`;
-    if (screen === 'gallery') this.overlay.innerHTML = `<div class="gallery-header"><span class="micro-label">MOBILE SUIT ARCHIVE</span><h1>机体整备库<span>06</span></h1><p>选择机体 · 旋转检视 · 联邦机体可出击</p></div><div class="gallery-cards"><button data-action="inspect-gundam" class="archive-card active"><span>01 / EARTH FEDERATION</span><h3>RX-78-2 高达</h3><p>光束步枪 · 120mm 机枪 · 光束军刀</p><b>可驾驶</b></button><button data-action="inspect-gm" class="archive-card"><span>02 / EARTH FEDERATION</span><h3>RGM-79 吉姆</h3><p>光束喷枪 · 120mm 机枪 · 单军刀背包</p><b>可驾驶</b></button><button data-action="inspect-zaku" class="archive-card"><span>03 / PRINCIPALITY OF ZEON</span><h3>MS-06F 扎古 II</h3><p>120mm 机枪 · 热能斧</p><b>普通敌机</b></button><button data-action="inspect-char-zaku" class="archive-card char-card"><span>04 / CHAR AZNABLE</span><h3>MS-06S 夏亚专用</h3><p>指挥官角 · 红色涂装 · 精英机动</p><b>精英敌机</b></button><button data-action="inspect-nu-gundam" class="archive-card nu-card"><span>05 / LONDO BELL</span><h3>RX-93 牛高达</h3><p>光束步枪 · 光束军刀 · 六枚自动浮游炮</p><b>可驾驶 · 浮游炮可被击落</b></button><button data-action="inspect-dom" class="archive-card dom-card"><span>06 / HEAVY ASSAULT</span><h3>MS-09 大魔</h3><p>巨型火箭筒 · 热能军刀 · 悬浮机动</p><b>重装敌机</b></button></div><div class="gallery-actions"><button class="secondary-button" data-action="menu">← 返回作战准备</button><button class="secondary-button" data-action="rotate">旋转机体 ↻</button><button class="secondary-button" data-action="preview-weapon">切换展示武器 ⇄</button><button class="secondary-button sortie-button" data-action="sortie">驾驶高达出击 ↗</button></div>`;
+    if (screen === 'gallery') this.overlay.innerHTML = `<div class="gallery-header"><span class="micro-label">MOBILE SUIT ARCHIVE</span><h1>机体整备库<span>06</span></h1><p>选择机体 · 旋转检视 · 四款机体可出击</p></div><div class="gallery-cards"><button data-action="inspect-gundam" class="archive-card active"><span>01 / EARTH FEDERATION</span><h3>RX-78-2 高达</h3><p>光束步枪 · 120mm 机枪 · 光束军刀</p><b>可驾驶</b></button><button data-action="inspect-gm" class="archive-card"><span>02 / EARTH FEDERATION</span><h3>RGM-79 吉姆</h3><p>光束喷枪 · 120mm 机枪 · 单军刀背包</p><b>可驾驶</b></button><button data-action="inspect-zaku" class="archive-card"><span>03 / PRINCIPALITY OF ZEON</span><h3>MS-06F 扎古 II</h3><p>120mm 机枪 · 热能斧</p><b>普通敌机</b></button><button data-action="inspect-char-zaku" class="archive-card char-card"><span>04 / CHAR AZNABLE</span><h3>MS-06S 夏亚专用</h3><p>指挥官角 · 红色涂装 · 精英机动</p><b>精英敌机</b></button><button data-action="inspect-nu-gundam" class="archive-card nu-card"><span>05 / LONDO BELL</span><h3>RX-93 牛高达</h3><p>光束步枪 · 光束军刀 · 六枚自动浮游炮</p><b>可驾驶 · 浮游炮可被击落</b></button><button data-action="inspect-dom" class="archive-card dom-card"><span>06 / HEAVY ASSAULT</span><h3>MS-09 大魔</h3><p>追踪火箭筒 · 热能军刀 · 悬浮机动</p><b>可驾驶 · 重装突击</b></button></div><div class="gallery-actions"><button class="secondary-button" data-action="menu">← 返回作战准备</button><button class="secondary-button" data-action="rotate">旋转机体 ↻</button><button class="secondary-button" data-action="preview-weapon">切换展示武器 ⇄</button><button class="secondary-button sortie-button" data-action="sortie">驾驶高达出击 ↗</button></div>`;
     if (screen === 'paused') this.overlay.innerHTML = `<div class="modal-scrim"></div><div class="pause-panel"><span class="micro-label">SYSTEM STANDBY</span><h1>作战暂停<span>Ⅱ</span></h1><p class="ai-description">${AI_LABELS[this.aiMode]}</p><p class="panel-subtitle">${data.message || '喘口气，准备下一次推进。'}</p><button class="primary-button" data-action="resume"><span>继续作战</span><span>→</span></button><button class="secondary-button" data-action="restart">重新出击 ↻</button><button class="text-button" data-action="menu">返回作战准备</button>${controls}${settings}</div>`;
     if (screen === 'victory' || screen === 'defeat') {
       const resultText = screen === 'victory'
@@ -145,7 +145,7 @@ export class GameUI {
   setPilot(id: PlayableMechaId): void {
     this.pilot = id;
     this.el('pilot-name').textContent = `${PLAYABLE_MECHAS[id].code} / ${PLAYABLE_MECHAS[id].english}`;
-    this.el('ranged-label').textContent = id === 'gm' ? '喷枪' : '步枪';
+    this.el('ranged-label').textContent = id === 'dom' ? '火箭筒' : id === 'gm' ? '喷枪' : '步枪';
   }
   setMap(map: MapDefinition): void {
     this.map = map;
@@ -209,13 +209,14 @@ export class GameUI {
       data.flightState === 'grounded' ? 'F 起飞 · 松开方向键悬停' :
       data.flightState === 'descent' || data.flightState === 'jump' ? 'F 接管飞行 · 落地自动充能' : '松键悬停 · F 降落 · Space / Ctrl 升降';
     const machinegun = data.slot === 'alternate-ranged';
+    const usesAmmo = !data.melee && data.magazine !== undefined;
     this.el('weapon').textContent = data.weapon; this.el('weapon-slot').textContent = data.melee ? '02' : machinegun ? '03' : '01';
-    this.el('weapon-message').textContent = data.melee ? (data.reloading ? 'SLASH · RECOVERING' : 'SLASH · READY') : machinegun ?
+    this.el('weapon-message').textContent = data.melee ? (data.reloading ? 'SLASH · RECOVERING' : 'SLASH · READY') : usesAmmo ?
       (data.reloading ? 'RELOADING · 换弹中' : `弹量 · ${data.ammo ?? 0}/${data.magazine ?? 45}`) :
       (data.overheated ? 'OVERHEAT · 冷却中' : 'ENERGY · ' + Math.round(data.heat) + '%');
-    const meter = data.melee ? (data.reloading ? 100 : 0) : machinegun ? (data.ammo ?? 0) / (data.magazine ?? 45) * 100 : data.heat;
+    const meter = data.melee ? (data.reloading ? 100 : 0) : usesAmmo ? (data.ammo ?? 0) / data.magazine! * 100 : data.heat;
     this.el('heat-fill').style.width = meter + '%';
-    this.el('heat-fill').classList.toggle('critical', !machinegun && data.overheated);
+    this.el('heat-fill').classList.toggle('critical', !usesAmmo && data.overheated);
     this.el('ranged-key').classList.toggle('selected', data.slot === 'ranged');
     this.el('melee-key').classList.toggle('selected', data.melee);
     this.el('machinegun-key').hidden = !data.hasAlternateRanged;

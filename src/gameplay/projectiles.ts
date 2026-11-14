@@ -4,9 +4,10 @@ import type { RectCollider } from '../content/maps/types';
 import type { Actor } from './actor';
 import { blastHits, firstSegmentHit, type Point3 } from './combat';
 import type { DamageableTarget } from './damageable';
+import { guideRocket, type RocketGuidance } from './rocket-guidance';
 
 export interface ProjectileSnapshot { id: number; position: Point3; velocity: Point3; life: number; ownerId: string; team: string; damage: number; sourceUnitId?: string }
-interface Projectile extends Omit<ProjectileSnapshot, 'position' | 'velocity'> { active: boolean; position: Vector3; velocity: Vector3; color: Color; beam: boolean; blastRadius: number; trailTime: number }
+interface Projectile extends Omit<ProjectileSnapshot, 'position' | 'velocity'> { active: boolean; position: Vector3; velocity: Vector3; color: Color; beam: boolean; blastRadius: number; trailTime: number; guidance?: RocketGuidance }
 export class ProjectileSystem {
   readonly root = new Group();
   private readonly geometry = new SphereGeometry(1, 6, 4);
@@ -30,6 +31,7 @@ export class ProjectileSystem {
     p.life = weapon.range / weapon.speed; p.ownerId = owner.id; p.team = owner.team; p.damage = weapon.damage;
     p.sourceUnitId = sourceUnitId;
     p.blastRadius = weapon.blastRadius ?? 0; p.trailTime = 0;
+    p.guidance = weapon.homing ? { config: weapon.homing, remaining: weapon.homing.duration, acquired: false } : undefined;
     p.color.setHex(weapon.color); p.beam = weapon.visual === 'beam' || weapon.id === 'beam-rifle' || weapon.id === 'beam-spray-gun';
     return true;
   }
@@ -43,10 +45,11 @@ export class ProjectileSystem {
     for (const p of this.pool) {
       if (!p.active) continue;
       const travelTime = Math.min(dt, p.life);
-      end.copy(p.position).addScaledVector(p.velocity, travelTime);
       const remoteTargets = additionalTargets.filter(t => t.team !== p.team && t.id !== p.ownerId && t.isAlive());
       const bodies = [...bodyTeams.values()].filter(a => !a.dead && a.team !== p.team && a.id !== p.ownerId).map(a => a.hitBody());
       bodies.push(...remoteTargets.map(t => t.hitBody()));
+      if (p.guidance) guideRocket(p.position, p.velocity, p.guidance, travelTime, bodies, walls);
+      end.copy(p.position).addScaledVector(p.velocity, travelTime);
       let hit = firstSegmentHit(p.position, end, walls, bodies);
       if (p.blastRadius && end.y <= 0 && p.velocity.y < 0) {
         const t = Math.max(0, p.position.y / (p.position.y - end.y));

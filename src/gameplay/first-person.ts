@@ -25,7 +25,7 @@ export class FirstPersonWeapon {
     const light = new DirectionalLight(0xffffff, 2.8);
     light.position.set(-3, 5, 2); this.scene.add(light);
     const hand = group(this.root, 'first-person-hand');
-    const armor = this.resources.material(gm ? 0xd5e5dc : 0xf0f2ed);
+    const armor = this.resources.material(typeof pilot !== 'boolean' && pilot.id === 'dom' ? 0x7453a0 : gm ? 0xd5e5dc : 0xf0f2ed);
     const dark = this.resources.material(0x263447);
     part(hand, this.resources.box(0.48, 0.38, 0.49), dark, [0, -0.12, 0]);
     part(hand, this.resources.box(0.6, 0.72, 0.64), armor, [0, -0.62, 0.12]);
