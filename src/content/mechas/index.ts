@@ -1,8 +1,10 @@
 import { gundamDefinition } from './gundam';
+import { domDefinition } from './dom';
 import { charZakuDefinition, zakuDefinition } from './zaku';
 import type { MechaDefinition } from './types';
 
 export { createGundamRig, gundamDefinition } from './gundam';
+export { createDomRig, domDefinition } from './dom';
 export { createZakuRig, zakuDefinition, charZakuDefinition } from './zaku';
 export type { MechaDefinition, MechaPose, MechaRig, WeaponSlot } from './types';
 
@@ -10,6 +12,7 @@ export const MECHA_DEFINITIONS: Record<string, MechaDefinition> = {
   gundam: gundamDefinition,
   zaku: zakuDefinition,
   'char-zaku': charZakuDefinition,
+  dom: domDefinition,
 };
 export const mechaDefinitions = MECHA_DEFINITIONS;
 

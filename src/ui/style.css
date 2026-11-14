@@ -425,7 +425,7 @@ p {
   left: 5%;
   right: 5%;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 18px;
 }
 .archive-card {
@@ -473,6 +473,11 @@ p {
 .char-card b {
   color: var(--accent);
 }
+.dom-card b { color: #cdb6ff; }
+.dom-card.active { border-color: #cdb6ff; }
+.enemy-marker.charging { color: #ffba70; }
+.enemy-marker.charging > span { background: #4a241ee8; padding: 5px 9px; }
+#toast.rocket-warning { color: #ffe1ac; background: #4a251de8; border: 1px solid #ffb76a; padding: 9px 16px; }
 .gallery-actions {
   position: absolute;
   bottom: 29px;
@@ -1204,6 +1209,7 @@ kbd {
   .gallery-cards {
     left: 4%;
     right: 4%;
+    grid-template-columns: repeat(2, 1fr);
     gap: 5px;
     bottom: 85px;
   }

@@ -65,8 +65,9 @@ export class Game {
       writeStorage('sd-city-settings', JSON.stringify(this.preferences));
     };
     this.bus.on('shot', event => {
-      const sound = event.weapon === 'beam-rifle' ? 'beam' : event.weapon === 'beam-saber' ? 'saber' : event.weapon === 'heat-hawk' ? 'axe' : 'machinegun';
-      this.audio.play(sound, event.ownerId === 'player' ? 0.48 : 0.12, 0.95 + Math.random() * 0.1);
+      const rocket = event.weapon === 'giant-bazooka';
+      const sound = rocket ? 'explosion' : event.weapon === 'beam-rifle' ? 'beam' : event.weapon === 'beam-saber' ? 'saber' : ['heat-hawk', 'heat-saber'].includes(event.weapon) ? 'axe' : 'machinegun';
+      this.audio.play(sound, event.ownerId === 'player' ? 0.48 : rocket ? 0.24 : 0.12, rocket ? 0.72 : 0.95 + Math.random() * 0.1);
     });
     this.bus.on('wave', event => { this.ui.wave(event.index, event.title); this.audio.play('wave', 0.28); });
     this.bus.on('damaged', event => {
@@ -110,7 +111,7 @@ export class Game {
     if (action === 'resume') return this.resume();
     if (action === 'retry') return this.load();
     if (action === 'menu') { this.mode = 'menu'; this.input.unlock(); this.audio.stop(); this.showMenu(); return; }
-    if (action === 'gallery') { this.show('gallery'); this.galleryRotation = 0; this.layoutExhibit(); return; }
+    if (action === 'gallery') { this.selectedPreview = 'dom'; this.show('gallery'); this.galleryRotation = 0; this.layoutExhibit(); return; }
     if (action === 'rotate') this.galleryRotation += Math.PI / 6;
     if (action === 'preview-weapon') {
       this.galleryWeapon = !this.galleryWeapon;
@@ -129,7 +130,7 @@ export class Game {
   }
   private showMenu(): void {
     this.clearActors(); this.ended = false; this.accumulator = 0; this.galleryWeapon = false; this.selectedPreview = 'gundam';
-    for (const id of ['gundam', 'zaku', 'char-zaku']) {
+    for (const id of ['gundam', 'zaku', 'char-zaku', 'dom']) {
       const actor = new Actor('preview-' + id, getMechaDefinition(id), id === 'gundam' ? 'player' : 'enemy');
       this.exhibit.push(actor); this.graphics.scene.add(actor.rig.root);
     }
@@ -139,7 +140,8 @@ export class Game {
     const spawn = this.map.playerSpawn;
     this.exhibit.forEach((actor, index) => {
       const gallery = this.mode === 'gallery';
-      actor.position.set(spawn.x + (gallery ? (index - 1) * 9.8 : index === 1 ? 8 : index === 2 ? -7 : 0),
+      actor.rig.root.visible = gallery ? actor.definition.id === this.selectedPreview : index < 3;
+      actor.position.set(spawn.x + (gallery ? 0 : index === 1 ? 8 : index === 2 ? -7 : 0),
         0, spawn.z + (gallery ? 0 : index === 0 ? 0 : -7));
       actor.yaw = Math.PI + (gallery ? 0.12 : -0.15);
     });
@@ -152,9 +154,9 @@ export class Game {
       actor.updateVisual(this.simulationTime, false);
     });
     const spawn = this.map.playerSpawn, gallery = this.mode === 'gallery';
-    this.graphics.camera.position.set(gallery ? 4 : 13, gallery ? 11.6 : 8.2, spawn.z + (gallery ? 30 : 18.8));
-    this.graphics.camera.fov = gallery ? 50 : 47; this.graphics.camera.updateProjectionMatrix();
-    this.graphics.camera.lookAt(gallery ? 0 : -2.8, gallery ? 2.5 : 3.1, spawn.z - (gallery ? 0 : 0.5));
+    this.graphics.camera.position.set(gallery ? 10.5 : 13, gallery ? 8.4 : 8.2, spawn.z + (gallery ? 17.5 : 18.8));
+    this.graphics.camera.fov = gallery ? 43 : 47; this.graphics.camera.updateProjectionMatrix();
+    this.graphics.camera.lookAt(gallery ? 0 : -2.8, gallery ? 2.9 : 3.1, spawn.z - (gallery ? 0 : 0.5));
     this.graphics.followSun(new Vector3(0, 0, spawn.z));
   }
   private async start(): Promise<void> {
@@ -224,10 +226,15 @@ export class Game {
     const player = this.player!, weapon = WEAPON_DEFINITIONS[enemy.definition.rangedWeapon];
     if (enemy.aiAmmo <= 0) { enemy.aiAmmo = weapon.magazine ?? 12; enemy.aiReload = weapon.reloadTime ?? 2.3; return; }
     enemy.aiAmmo--; enemy.aiFireTimer = weapon.cooldown;
+    if (enemy.aiAmmo === 0) { enemy.aiAmmo = weapon.magazine ?? 12; enemy.aiReload = weapon.reloadTime ?? 2.3; }
     const origin = enemy.rig.muzzle.getWorldPosition(new Vector3());
-    const target = player.position.clone().add(new Vector3((Math.random() - 0.5) * 5, 2.7 + Math.random() * 1.9, (Math.random() - 0.5) * 5));
+    const target = weapon.aimTime ? enemy.aiAimPoint.clone() : player.position.clone().add(new Vector3((Math.random() - 0.5) * 5, 2.7 + Math.random() * 1.9, (Math.random() - 0.5) * 5));
+    // A wide shoulder weapon can be behind cover even when the actor's center can see.
+    const blocked = firstSegmentHit(enemy.position.clone().add(new Vector3(0, 3.6, 0)), origin, this.world!.colliders, []);
+    if (blocked) origin.set(blocked.point.x, blocked.point.y, blocked.point.z);
+    enemy.aiAimTime = 0; enemy.recoil = weapon.blastRadius ? 1 : 0;
     this.projectiles.fire(enemy, origin, target.sub(origin).normalize(), weapon);
-    this.effects.burst(origin, weapon.color, 2, 0.09); this.bus.emit('shot', { ownerId: enemy.id, weapon: weapon.id });
+    this.effects.burst(origin, weapon.color, weapon.blastRadius ? 12 : 2, weapon.blastRadius ? 0.4 : 0.09); this.bus.emit('shot', { ownerId: enemy.id, weapon: weapon.id });
   }
   private damage(actor: Actor, amount: number, position: Vector3): void {
     if (actor.dead || this.mode !== 'playing') return;
@@ -285,10 +292,16 @@ export class Game {
         actor.position.x = next.x; actor.position.z = next.z;
       }
     }
-    this.projectiles.update(dt, alive, walls, (position, amount, target) => {
+    this.projectiles.update(dt, alive, walls, (position, amount, target, blastRadius) => {
+      if (blastRadius) {
+        this.effects.burst(position, 0xffaa52, 30, 1.0);
+        this.effects.burst(position, 0x686571, 12, 0.48, true);
+        this.audio.play('explosion', 0.28, 0.8);
+        return;
+      }
       this.effects.burst(position, target ? 0xffd38c : 0xbcc9c5, target ? 10 : 6, 0.45);
       if (target) this.damage(target, amount, position);
-    });
+    }, position => this.effects.burst(position, 0x9d9291, 1, 0.04, true));
     this.effects.update(dt);
     this.enemies = this.enemies.filter(enemy => { if (!enemy.dead) return true; enemy.dispose(); return false; });
     this.mission.update(dt);
@@ -311,7 +324,8 @@ export class Game {
     this.ui.update({ health: player.health, maxHealth: player.definition.maxHealth, energy: player.energy, heat: player.rifle.heat,
       overheated: player.rifle.overheated, weapon: WEAPON_DEFINITIONS[player.slot === 'ranged' ? player.definition.rangedWeapon : player.definition.meleeWeapon].name,
       melee: player.slot === 'melee', wave: this.mission.waveIndex + 1, remaining: this.mission.remaining, kills: this.mission.kills,
-      elapsed: this.mission.elapsed, intermission: this.mission.intermission, fps: this.fps, reloading: player.swing.running });
+      elapsed: this.mission.elapsed, intermission: this.mission.intermission, fps: this.fps, reloading: player.swing.running,
+      rocketWarning: this.enemies.some(enemy => enemy.aiAimTime > 0) });
     const markers: EnemyMarker[] = [];
     for (const enemy of this.enemies) {
       if (enemy.position.distanceTo(player.position) > 105) continue;
@@ -319,7 +333,7 @@ export class Game {
       if (position.z < -1 || position.z > 1 || Math.abs(position.x) > 1 || Math.abs(position.y) > 1) continue;
       if (firstSegmentHit(this.graphics.camera.position, enemy.position.clone().add(new Vector3(0, 4, 0)), this.world!.colliders, [])) continue;
       markers.push({ id: enemy.id, x: (position.x * 0.5 + 0.5) * 100, y: (-position.y * 0.5 + 0.5) * 100,
-        health: enemy.health / enemy.definition.maxHealth, name: enemy.definition.id === 'char-zaku' ? 'CHAR / 夏亚专用' : 'ZAKU II', elite: enemy.definition.id === 'char-zaku' });
+        health: enemy.health / enemy.definition.maxHealth, name: enemy.definition.id === 'char-zaku' ? 'CHAR / 夏亚专用' : enemy.definition.id === 'dom' ? 'DOM / 大魔' : 'ZAKU II', elite: enemy.definition.id === 'char-zaku', charging: enemy.aiAimTime > 0 });
     }
     this.ui.markers(markers); this.ui.drawRadar({ x: player.position.x, z: player.position.z, yaw: player.yaw }, this.enemies.map(e => ({ x: e.position.x, z: e.position.z, elite: e.definition.id === 'char-zaku' })));
   }

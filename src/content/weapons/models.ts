@@ -79,3 +79,41 @@ export function createZakuWeapons(parent: Object3D, resources: GeometryResources
   melee.visible = false;
   return { ranged, melee, muzzle, bladeTip };
 }
+
+/** Dom's shoulder-mounted Giant Bazooka, with an open bore and flared backblast end. */
+export function createDomWeapons(parent: Object3D, resources: GeometryResources): WeaponModels {
+  const graphite = resources.material(0x30343e);
+  const metal = resources.material(0x707480);
+  const dark = resources.material(0x10151e);
+  const hot = resources.material(0xffb961, 0xff611d, 1.8);
+  const ranged = group(parent, 'ranged-weapon', [0.22, 0.18, -0.35]);
+  const barrel = group(ranged, 'giant-bazooka');
+  part(barrel, resources.cylinder(0.38, 0.38, 3.9, 20), graphite, [0, 0, -0.34], [Math.PI / 2, 0, 0]);
+  // The shallow inset disc leaves the muzzle visibly hollow without transparent faces.
+  part(barrel, resources.cylinder(0.5, 0.5, 0.28, 20), metal, [0, 0, -2.32], [Math.PI / 2, 0, 0]);
+  part(barrel, resources.cylinder(0.37, 0.37, 0.025, 20), dark, [0, 0, -2.47], [Math.PI / 2, 0, 0]);
+  part(barrel, resources.torus(0.43, 0.065), graphite, [0, 0, -2.48]);
+  part(barrel, resources.cylinder(0.61, 0.37, 0.8, 20), graphite, [0, 0, 1.91], [Math.PI / 2, 0, 0]);
+  part(barrel, resources.cylinder(0.49, 0.49, 0.035, 20), dark, [0, 0, 2.32], [Math.PI / 2, 0, 0]);
+  part(barrel, resources.torus(0.55, 0.07), metal, [0, 0, 2.34]);
+  for (const z of [-1.65, -0.82, 0.7, 1.45]) {
+    part(barrel, resources.cylinder(0.425, 0.425, 0.12, 20), metal, [0, 0, z], [Math.PI / 2, 0, 0]);
+  }
+  part(barrel, resources.box(0.54, 0.38, 0.85), graphite, [0, -0.35, -0.52]);
+  part(barrel, resources.box(0.22, 0.95, 0.28), dark, [0, -1.02, -0.25], [-0.15, 0, 0]);
+  part(barrel, resources.box(0.64, 0.18, 0.75), metal, [0, -0.45, 0.68]);
+  part(barrel, resources.box(0.16, 0.32, 0.18), graphite, [-0.45, 0.16, -0.95]);
+  part(barrel, resources.cylinder(0.14, 0.14, 0.5), metal, [-0.45, 0.38, -0.95], [Math.PI / 2, 0, 0]);
+  part(barrel, resources.cylinder(0.105, 0.105, 0.03), hot, [-0.45, 0.38, -1.22], [Math.PI / 2, 0, 0]);
+  mergeArmor(barrel, resources);
+  const muzzle = forwardSocket(ranged, 'muzzle', 0, 0, -2.59);
+  const melee = group(parent, 'melee-weapon', [0, -1.16, -0.16]);
+  const saber = group(melee, 'heat-saber');
+  rod(saber, resources, [0, -0.3, 0.1], [0, 0.42, -0.1], 0.11, dark);
+  rod(saber, resources, [-0.28, 0.37, -0.08], [0.28, 0.37, -0.08], 0.08, metal);
+  rod(saber, resources, [0, 0.45, -0.12], [0, 2.8, -0.84], 0.13, hot, 0.055);
+  mergeArmor(saber, resources);
+  const bladeTip = forwardSocket(melee, 'blade-tip', 0, 2.8, -0.84);
+  melee.visible = false;
+  return { ranged, melee, muzzle, bladeTip };
+}

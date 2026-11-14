@@ -111,3 +111,18 @@ export function meleeCanHit(attacker: { x: number; z: number; yaw: number }, tar
   return dot >= Math.cos(Math.PI * 0.38) && !firstSegmentHit(
     { x: attacker.x, y: 3, z: attacker.z }, { x: target.x, y: 3, z: target.z }, walls, []);
 }
+
+/** Distance is measured to the body surface; solid cover blocks the pressure wave. */
+export function blastHits(center: Point3, radius: number, damage: number, bodies: HitBody[], walls: RectCollider[], directId?: string): { id: string; damage: number }[] {
+  const hits: { id: string; damage: number }[] = [];
+  for (const body of bodies) {
+    if (body.id === directId) { hits.push({ id: body.id, damage }); continue; }
+    const dx = center.x - body.x, dz = center.z - body.z, horizontal = Math.hypot(dx, dz);
+    const factor = horizontal > 0 ? Math.min(1, body.radius / horizontal) : 0;
+    const nearest = { x: body.x + dx * factor, y: Math.max(body.y, Math.min(body.y + body.height, center.y)), z: body.z + dz * factor };
+    const distance = Math.hypot(nearest.x - center.x, nearest.y - center.y, nearest.z - center.z);
+    if (distance >= radius || firstSegmentHit(center, nearest, walls, [])) continue;
+    hits.push({ id: body.id, damage: Math.max(1, Math.round(damage * (1 - 0.8 * distance / radius))) });
+  }
+  return hits;
+}

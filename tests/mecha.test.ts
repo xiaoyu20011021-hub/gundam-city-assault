@@ -3,7 +3,7 @@ import { Box3, Mesh, Vector3 } from 'three';
 import { MECHA_DEFINITIONS } from '../src/content/mechas';
 
 describe('modular mecha rigs', () => {
-  it.each(['gundam', 'zaku', 'char-zaku'])('creates %s grounded at its feet with a forward muzzle', (id) => {
+  it.each(['gundam', 'zaku', 'char-zaku', 'dom'])('creates %s grounded at its feet with a forward muzzle', (id) => {
     const rig = MECHA_DEFINITIONS[id].createRig();
     rig.root.updateMatrixWorld(true);
     const bounds = new Box3().setFromObject(rig.root);

@@ -26,9 +26,11 @@ describe('city battle content', () => {
   it('defines the agreed three waves and reserves Char for the final wave', () => {
     expect(cityDefinition.waves.map(w => w.enemies.length)).toEqual([4, 6, 5]);
     expect(cityDefinition.waves[0].enemies.every(e => e === 'zaku')).toBe(true);
-    expect(cityDefinition.waves[1].enemies.every(e => e === 'zaku')).toBe(true);
+    expect(cityDefinition.waves[1].enemies.filter(e => e === 'zaku')).toHaveLength(4);
+    expect(cityDefinition.waves[1].enemies.filter(e => e === 'dom')).toHaveLength(2);
     expect(cityDefinition.waves[2].enemies.filter(e => e === 'char-zaku')).toHaveLength(1);
-    expect(cityDefinition.waves[2].enemies.filter(e => e === 'zaku')).toHaveLength(4);
+    expect(cityDefinition.waves[2].enemies.filter(e => e === 'zaku')).toHaveLength(3);
+    expect(cityDefinition.waves[2].enemies.filter(e => e === 'dom')).toHaveLength(1);
   });
   it('connects every enemy spawn to the player through navigable streets', () => {
     for (const spawn of cityDefinition.enemySpawns) {

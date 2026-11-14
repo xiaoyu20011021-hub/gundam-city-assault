@@ -9,6 +9,8 @@ export interface MechaPose {
   boosting: boolean;
   airborne: boolean;
   hurt: number;
+  charge?: number;
+  recoil?: number;
 }
 export interface MechaRig {
   root: Group;

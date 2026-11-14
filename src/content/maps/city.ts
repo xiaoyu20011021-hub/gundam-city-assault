@@ -286,8 +286,8 @@ export const cityDefinition: MapDefinition = {
   ],
   waves: [
     { title: '第一波 · 侦察小队', enemies: Array(4).fill('zaku') },
-    { title: '第二波 · 城市突击', enemies: Array(6).fill('zaku') },
-    { title: '最终波 · 赤色彗星', enemies: ['char-zaku', ...Array(4).fill('zaku')] },
+    { title: '第二波 · 大魔重装突击', enemies: ['dom', 'dom', ...Array(4).fill('zaku')] },
+    { title: '最终波 · 赤色彗星', enemies: ['char-zaku', 'dom', ...Array(3).fill('zaku')] },
   ],
   createWorld: createCityWorld,
 };

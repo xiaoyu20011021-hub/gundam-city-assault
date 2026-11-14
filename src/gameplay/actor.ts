@@ -23,11 +23,15 @@ export class Actor {
   aiReload = 0;
   aiPath: { x: number; z: number }[] = [];
   aiStrafe = 1;
+  aiAimTime = 0;
+  readonly aiAimPoint = new Vector3();
+  recoil = 0;
   private pendingWeapon?: WeaponSlot;
   constructor(readonly id: string, readonly definition: MechaDefinition, readonly team: 'player' | 'enemy') {
     this.health = definition.maxHealth;
     this.rig = definition.createRig(); this.rig.root.name = id;
     const weapon = WEAPON_DEFINITIONS[definition.rangedWeapon];
+    this.aiAmmo = weapon.magazine ?? 12;
     this.rifle = new WeaponState({ cooldown: weapon.cooldown, heatPerShot: weapon.heatPerShot, cooling: weapon.cooling });
     this.swing = definition.id === 'gundam' ? new MeleeSwing(0.18, 0.22, 0.38) : new MeleeSwing(0.32, 0.24, 0.59);
   }
@@ -39,7 +43,8 @@ export class Actor {
   updateVisual(time: number, aiming: boolean): void {
     this.rig.root.position.copy(this.position); this.rig.root.rotation.y = this.yaw;
     this.rig.animate({ time, speed: this.speed / this.definition.speed, aiming, attack: this.swing.progress,
-      boosting: this.boosting, airborne: this.position.y > 0.1, hurt: this.hurt });
+      boosting: this.boosting, airborne: this.position.y > 0.1, hurt: this.hurt,
+      charge: this.aiAimTime / (WEAPON_DEFINITIONS[this.definition.rangedWeapon].aimTime ?? 1), recoil: this.recoil });
     this.rig.root.updateMatrixWorld(true);
   }
   tick(dt: number): void {
@@ -48,6 +53,7 @@ export class Actor {
       const slot = this.pendingWeapon; this.pendingWeapon = undefined; this.setWeapon(slot);
     }
     this.hurt = Math.max(0, this.hurt - dt * 3);
+    this.recoil = Math.max(0, this.recoil - dt * 4);
     this.aiFireTimer = Math.max(0, this.aiFireTimer - dt);
     this.aiReload = Math.max(0, this.aiReload - dt);
   }
